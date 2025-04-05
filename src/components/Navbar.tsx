@@ -24,7 +24,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-electric font-bold text-xl">SwiftSpark</span>
+              <span className="text-electric font-bold text-xl">Powerhouse Solutions</span>
             </div>
             
             {/* Desktop navigation */}

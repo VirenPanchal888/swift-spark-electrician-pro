@@ -18,6 +18,14 @@ import {
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { formatRupees } from '@/lib/formatters';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 
 const TransactionList = () => {
   const { transactions, updateTransaction, deleteTransaction } = useStore();
@@ -106,24 +114,24 @@ const TransactionList = () => {
           <p className="text-center text-gray-500 py-4">No transactions found.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="py-2 px-4 text-left font-medium text-gray-500">Material</th>
-                  <th className="py-2 px-4 text-left font-medium text-gray-500">Amount</th>
-                  <th className="py-2 px-4 text-left font-medium text-gray-500">Quantity</th>
-                  <th className="py-2 px-4 text-left font-medium text-gray-500">Date</th>
-                  <th className="py-2 px-4 text-left font-medium text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Material</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredTransactions.map((transaction) => (
-                  <tr key={transaction.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4">{transaction.materialName}</td>
-                    <td className="py-3 px-4">{formatRupees(transaction.amount)}</td>
-                    <td className="py-3 px-4">{transaction.quantity}</td>
-                    <td className="py-3 px-4">{formatDate(transaction.date)}</td>
-                    <td className="py-3 px-4 flex space-x-2">
+                  <TableRow key={transaction.id}>
+                    <TableCell>{transaction.materialName}</TableCell>
+                    <TableCell>{formatRupees(transaction.amount)}</TableCell>
+                    <TableCell>{transaction.quantity}</TableCell>
+                    <TableCell>{formatDate(transaction.date)}</TableCell>
+                    <TableCell className="flex space-x-2">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button 
@@ -194,11 +202,11 @@ const TransactionList = () => {
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </CardContent>
