@@ -5,6 +5,7 @@ import { MaterialUsage } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, PieChart, LineChart, Bar, Pie, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { formatRupees } from '@/lib/formatters';
 
 const COLORS = ['#0077B6', '#00B4D8', '#90E0EF', '#FFD700', '#CAF0F8', '#03045E'];
 
@@ -48,6 +49,9 @@ const CalculationTool = () => {
   
   const lineData = aggregateByDate();
 
+  // Custom tooltip formatter for currency values
+  const currencyFormatter = (value: number) => formatRupees(value);
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -57,7 +61,7 @@ const CalculationTool = () => {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-electric">
-              ${totalCost.toFixed(2)}
+              {formatRupees(totalCost)}
             </div>
           </CardContent>
         </Card>
@@ -103,9 +107,14 @@ const CalculationTool = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip formatter={(value, name) => {
+                    if (name === "cost") {
+                      return [formatRupees(value as number), "Cost (₹)"];
+                    }
+                    return [value, name];
+                  }} />
                   <Legend />
-                  <Bar dataKey="cost" name="Cost ($)" fill="#0077B6" />
+                  <Bar dataKey="cost" name="Cost (₹)" fill="#0077B6" />
                   <Bar dataKey="quantity" name="Quantity" fill="#FFD700" />
                 </BarChart>
               </ResponsiveContainer>
@@ -128,7 +137,7 @@ const CalculationTool = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                  <Tooltip formatter={(value) => formatRupees(value as number)} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -143,7 +152,7 @@ const CalculationTool = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis />
-                  <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                  <Tooltip formatter={(value) => formatRupees(value as number)} />
                   <Legend />
                   <Line 
                     type="monotone" 
@@ -179,8 +188,8 @@ const CalculationTool = () => {
                   <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4">{material.materialName}</td>
                     <td className="py-3 px-4">{material.totalQuantity.toFixed(2)}</td>
-                    <td className="py-3 px-4">${material.totalCost.toFixed(2)}</td>
-                    <td className="py-3 px-4">${material.averageCost.toFixed(2)}</td>
+                    <td className="py-3 px-4">{formatRupees(material.totalCost)}</td>
+                    <td className="py-3 px-4">{formatRupees(material.averageCost)}</td>
                   </tr>
                 ))}
               </tbody>

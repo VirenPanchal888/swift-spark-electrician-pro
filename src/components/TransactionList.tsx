@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { formatRupees } from '@/lib/formatters';
 
 const TransactionList = () => {
   const { transactions, updateTransaction, deleteTransaction } = useStore();
@@ -119,7 +120,7 @@ const TransactionList = () => {
                 {filteredTransactions.map((transaction) => (
                   <tr key={transaction.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4">{transaction.materialName}</td>
-                    <td className="py-3 px-4">${transaction.amount.toFixed(2)}</td>
+                    <td className="py-3 px-4">{formatRupees(transaction.amount)}</td>
                     <td className="py-3 px-4">{transaction.quantity}</td>
                     <td className="py-3 px-4">{formatDate(transaction.date)}</td>
                     <td className="py-3 px-4 flex space-x-2">
@@ -150,7 +151,7 @@ const TransactionList = () => {
                             
                             <div className="grid grid-cols-2 gap-4">
                               <div className="grid gap-2">
-                                <Label htmlFor="editAmount">Amount ($)</Label>
+                                <Label htmlFor="editAmount">Amount (₹)</Label>
                                 <Input
                                   id="editAmount"
                                   type="number"

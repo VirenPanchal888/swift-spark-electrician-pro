@@ -4,8 +4,9 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Briefcase, Calculator, DollarSign, Package } from 'lucide-react';
+import { Activity, ArrowRight, Briefcase, Calculator, Package } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { formatRupees } from '@/lib/formatters';
 
 const COLORS = ['#0077B6', '#00B4D8', '#90E0EF', '#FFD700'];
 
@@ -29,7 +30,7 @@ const Index = () => {
       <main className="page-container animate-fade-in">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome to SwiftSpark</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome to Powerhouse Solution</h1>
             <p className="text-gray-600 mt-2">Your daily electrician transaction & calculation tracker</p>
           </div>
           
@@ -51,9 +52,9 @@ const Index = () => {
             <CardContent>
               <div className="flex justify-between items-center">
                 <div className="text-3xl font-bold text-electric">
-                  ${totalCost.toFixed(2)}
+                  {formatRupees(totalCost)}
                 </div>
-                <DollarSign className="h-8 w-8 text-electric-light" />
+                <div className="h-8 w-8 text-electric-light">₹</div>
               </div>
             </CardContent>
           </Card>
@@ -123,7 +124,7 @@ const Index = () => {
                             <div>
                               <p className="font-medium">{transaction.materialName}</p>
                               <p className="text-sm text-gray-500">
-                                {transaction.quantity} units - ${transaction.amount.toFixed(2)}
+                                {transaction.quantity} units - {formatRupees(transaction.amount)}
                               </p>
                             </div>
                             <span className="text-sm text-gray-500">
