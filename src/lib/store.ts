@@ -1,11 +1,11 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Transaction, Employee, MaterialUsage } from './types';
+import { Transaction, Employee, MaterialUsage, Material } from './types';
 
 interface StoreState {
   transactions: Transaction[];
   employees: Employee[];
+  materials: Material[];
   
   // Transaction actions
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -17,6 +17,11 @@ interface StoreState {
   updateEmployee: (employee: Employee) => void;
   deleteEmployee: (id: string) => void;
   
+  // Material actions
+  addMaterial: (material: Omit<Material, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateMaterial: (material: Material) => void;
+  deleteMaterial: (id: string) => void;
+  
   // Calculation helpers
   calculateTotalCost: () => number;
   calculateMaterialUsage: () => MaterialUsage[];
@@ -27,6 +32,7 @@ export const useStore = create<StoreState>()(
     (set, get) => ({
       transactions: [],
       employees: [],
+      materials: [],
       
       // Transaction actions
       addTransaction: (transaction) => {
@@ -75,6 +81,36 @@ export const useStore = create<StoreState>()(
       deleteEmployee: (id) => {
         set((state) => ({
           employees: state.employees.filter((employee) => employee.id !== id),
+        }));
+      },
+      
+      // Material actions
+      addMaterial: (material) => {
+        const now = new Date().toISOString();
+        const newMaterial = {
+          ...material,
+          id: crypto.randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+        };
+        set((state) => ({
+          materials: [...state.materials, newMaterial],
+        }));
+      },
+      
+      updateMaterial: (updatedMaterial) => {
+        set((state) => ({
+          materials: state.materials.map((material) => 
+            material.id === updatedMaterial.id 
+              ? { ...updatedMaterial, updatedAt: new Date().toISOString() } 
+              : material
+          ),
+        }));
+      },
+      
+      deleteMaterial: (id) => {
+        set((state) => ({
+          materials: state.materials.filter((material) => material.id !== id),
         }));
       },
       

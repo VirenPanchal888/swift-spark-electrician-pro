@@ -1,4 +1,3 @@
-
 export interface Transaction {
   id: string;
   materialName: string;
@@ -26,4 +25,14 @@ export interface MaterialUsage {
 export interface CalculationResult {
   totalCost: number;
   materialsUsed: MaterialUsage[];
+}
+
+export interface Material {
+  id: string;
+  materialName: string;
+  quantity: number;
+  unit?: string;
+  site: string;
+  createdAt: string;
+  updatedAt: string;
 }

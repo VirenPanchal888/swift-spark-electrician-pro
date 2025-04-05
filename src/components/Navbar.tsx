@@ -1,7 +1,6 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Activity, Briefcase, Calculator, LayoutDashboard, Menu, X } from 'lucide-react';
+import { Activity, Briefcase, Calculator, LayoutDashboard, Menu, X, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -14,6 +13,7 @@ const Navbar = () => {
     { name: 'Transactions', path: '/transactions', icon: <Activity className="h-5 w-5" /> },
     { name: 'Calculations', path: '/calculations', icon: <Calculator className="h-5 w-5" /> },
     { name: 'Employees', path: '/employees', icon: <Briefcase className="h-5 w-5" /> },
+    { name: 'Materials', path: '/materials', icon: <FileText className="h-5 w-5" /> },
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -27,7 +27,6 @@ const Navbar = () => {
               <span className="text-electric font-bold text-xl">Powerhouse Solutions</span>
             </div>
             
-            {/* Desktop navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navItems.map((item) => (
                 <Link
@@ -47,7 +46,6 @@ const Navbar = () => {
             </div>
           </div>
           
-          {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
             <Button 
               variant="ghost" 
@@ -65,7 +63,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="sm:hidden animate-slide-up">
           <div className="pt-2 pb-3 space-y-1">
