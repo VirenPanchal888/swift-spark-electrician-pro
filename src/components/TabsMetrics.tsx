@@ -168,7 +168,7 @@ const TabsMetrics = () => {
                       <h3 className="text-xl font-semibold mb-2">Materials Inventory</h3>
                       <CounterAnimation value={materialCount} suffix=" materials" />
                       <p className="text-muted-foreground mt-2">
-                        Used across {new Set(transactions.map(t => t.site)).size} sites
+                        Used across {new Set(transactions.map(t => t.siteLocation || 'Unknown')).size} sites
                       </p>
                     </div>
                     <div className="mt-4 sm:mt-0 bg-electric-light/10 rounded-full p-6">
@@ -180,15 +180,15 @@ const TabsMetrics = () => {
                     <h4 className="font-medium mb-3">Top Materials</h4>
                     <div className="space-y-2">
                       {calculateMaterialUsage().slice(0, 3).map((material) => (
-                        <div key={material.name} className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
+                        <div key={material.materialName} className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
                           <div>
-                            <p className="font-medium">{material.name}</p>
+                            <p className="font-medium">{material.materialName}</p>
                             <p className="text-sm text-muted-foreground">
-                              Used in {material.sites.length} sites
+                              Used across various sites
                             </p>
                           </div>
                           <span className="font-medium">
-                            {material.quantity} units
+                            {material.totalQuantity} units
                           </span>
                         </div>
                       ))}
