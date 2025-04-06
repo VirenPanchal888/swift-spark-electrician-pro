@@ -36,12 +36,13 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents }) => {
     const link = document.fileUrl;
     const fileName = document.title || 'document';
     
-    const a = document.createElement('a');
+    // Using window.document to be explicit and avoid confusion with our Document type
+    const a = window.document.createElement('a');
     a.href = link;
     a.download = fileName;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
   };
 
   // Delete document

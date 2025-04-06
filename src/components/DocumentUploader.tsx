@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Camera, File, Upload, X } from 'lucide-react';
+import { Camera, FileIcon, Upload, X } from 'lucide-react';
 import { FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -19,7 +19,7 @@ const documentSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   file: z
-    .instanceof(File)
+    .instanceof(window.File)
     .refine(file => file.size <= MAX_FILE_SIZE, 'File size must be less than 5MB')
     .refine(
       file => ACCEPTED_FILE_TYPES.includes(file.type),
@@ -151,7 +151,7 @@ const DocumentUploader = () => {
               className="flex-1"
               onClick={triggerFileInput}
             >
-              <File className="mr-2 h-4 w-4" />
+              <FileIcon className="mr-2 h-4 w-4" />
               Select File
             </Button>
             
@@ -205,7 +205,7 @@ const DocumentUploader = () => {
                 </div>
               ) : (
                 <div className="aspect-video flex items-center justify-center rounded-md bg-muted">
-                  <File className="h-12 w-12 text-muted-foreground" />
+                  <FileIcon className="h-12 w-12 text-muted-foreground" />
                   <span className="text-muted-foreground ml-2">
                     {form.getValues('file')?.name}
                   </span>
