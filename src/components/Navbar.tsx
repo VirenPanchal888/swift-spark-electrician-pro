@@ -61,12 +61,13 @@ const Navbar = () => {
     <nav className="bg-card shadow-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-primary font-bold text-xl">Powerhouse Solutions</span>
+              <span className="text-primary font-bold text-xl">Powerhouse</span>
+              <span className="text-primary font-bold text-xl mobile-hidden">Solutions</span>
             </div>
             
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-4 md:space-x-8">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -74,18 +75,18 @@ const Navbar = () => {
                   className={cn(
                     "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors",
                     location.pathname === item.path
-                      ? "border-primary text-primary-foreground"
+                      ? "border-primary text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                   )}
                 >
                   {item.icon}
-                  <span className="ml-2">{item.name}</span>
+                  <span className="ml-1 md:ml-2">{item.name}</span>
                 </Link>
               ))}
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {/* Theme toggle button */}
             <Button 
               variant="ghost" 
@@ -127,7 +128,7 @@ const Navbar = () => {
                 key={item.name}
                 to={item.path}
                 className={cn(
-                  "flex items-center px-3 py-2 text-base font-medium border-l-4",
+                  "flex items-center px-3 py-3 text-base font-medium border-l-4", // Increased tap target size
                   location.pathname === item.path
                     ? "border-primary text-primary bg-secondary"
                     : "border-transparent text-muted-foreground hover:bg-secondary/50"

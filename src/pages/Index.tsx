@@ -1,3 +1,4 @@
+
 import { useStore } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -24,18 +25,18 @@ const Index = () => {
   ] : [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="page-container animate-fade-in">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome to Powerhouse Solution</h1>
-            <p className="text-gray-600 mt-2">Your daily electrician transaction & calculation tracker</p>
+      <main className="page-container animate-fade-in px-3 sm:px-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8 mobile-stack">
+          <div className="w-full md:w-auto">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Welcome to Powerhouse</h1>
+            <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">Your daily electrician tracker</p>
           </div>
           
-          <div className="mt-4 md:mt-0 space-x-2">
-            <Button className="bg-electric hover:bg-electric-dark sparkle-btn" asChild>
+          <div className="mt-4 md:mt-0 w-full md:w-auto mobile-mt-4">
+            <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 sparkle-btn" asChild>
               <Link to="/transactions">
                 <Activity className="mr-2 h-4 w-4" />
                 New Transaction
@@ -44,26 +45,28 @@ const Index = () => {
           </div>
         </div>
         
-        <TabsMetrics />
+        <div className="mb-6">
+          <TabsMetrics />
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="data-card lg:col-span-2">
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mobile-grid-cols-1">
+          <Card className="data-card md:col-span-2 lg:col-span-2">
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-xl md:text-2xl">Recent Activity</CardTitle>
               <CardDescription>Your latest transactions and allocations</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 md:p-6 pt-0">
               {transactions.length === 0 && employees.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">No activity recorded yet</p>
-                  <div className="flex justify-center space-x-4">
-                    <Button variant="outline" asChild>
+                <div className="text-center py-4 md:py-8">
+                  <p className="text-muted-foreground mb-4">No activity recorded yet</p>
+                  <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+                    <Button variant="outline" className="w-full sm:w-auto" asChild>
                       <Link to="/transactions">
                         <Activity className="mr-2 h-4 w-4" />
                         Add Transaction
                       </Link>
                     </Button>
-                    <Button variant="outline" asChild>
+                    <Button variant="outline" className="w-full sm:w-auto" asChild>
                       <Link to="/employees">
                         <Briefcase className="mr-2 h-4 w-4" />
                         Add Employee
@@ -72,20 +75,20 @@ const Index = () => {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4 md:space-y-6">
                   {transactions.length > 0 && (
                     <div>
-                      <h3 className="font-medium text-sm text-gray-500 mb-3">Recent Transactions</h3>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2 md:mb-3">Recent Transactions</h3>
                       <div className="space-y-2">
                         {transactions.slice(0, 3).map((transaction) => (
-                          <div key={transaction.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                          <div key={transaction.id} className="flex justify-between items-center p-2 md:p-3 bg-secondary rounded-md">
                             <div>
-                              <p className="font-medium">{transaction.materialName}</p>
-                              <p className="text-sm text-gray-500">
+                              <p className="font-medium text-sm md:text-base">{transaction.materialName}</p>
+                              <p className="text-xs md:text-sm text-muted-foreground">
                                 {transaction.quantity} units - {formatRupees(transaction.amount)}
                               </p>
                             </div>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-xs md:text-sm text-muted-foreground">
                               {new Date(transaction.date).toLocaleDateString()}
                             </span>
                           </div>
@@ -93,10 +96,10 @@ const Index = () => {
                       </div>
                       {transactions.length > 3 && (
                         <div className="mt-3 text-right">
-                          <Button variant="link" className="text-electric px-0" asChild>
+                          <Button variant="link" className="text-primary px-0 text-sm" asChild>
                             <Link to="/transactions">
                               View all transactions
-                              <ArrowRight className="ml-1 h-4 w-4" />
+                              <ArrowRight className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                             </Link>
                           </Button>
                         </div>
@@ -106,15 +109,15 @@ const Index = () => {
                   
                   {employees.length > 0 && (
                     <div>
-                      <h3 className="font-medium text-sm text-gray-500 mb-3">Employee Allocations</h3>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2 md:mb-3">Employee Allocations</h3>
                       <div className="space-y-2">
                         {employees.slice(0, 3).map((employee) => (
-                          <div key={employee.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                          <div key={employee.id} className="flex justify-between items-center p-2 md:p-3 bg-secondary rounded-md">
                             <div>
-                              <p className="font-medium">{employee.name}</p>
-                              <p className="text-sm text-gray-500">{employee.siteLocation}</p>
+                              <p className="font-medium text-sm md:text-base">{employee.name}</p>
+                              <p className="text-xs md:text-sm text-muted-foreground">{employee.siteLocation}</p>
                             </div>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-xs md:text-sm text-muted-foreground">
                               {new Date(employee.startDate).toLocaleDateString()}
                             </span>
                           </div>
@@ -122,10 +125,10 @@ const Index = () => {
                       </div>
                       {employees.length > 3 && (
                         <div className="mt-3 text-right">
-                          <Button variant="link" className="text-electric px-0" asChild>
+                          <Button variant="link" className="text-primary px-0 text-sm" asChild>
                             <Link to="/employees">
                               View all employees
-                              <ArrowRight className="ml-1 h-4 w-4" />
+                              <ArrowRight className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                             </Link>
                           </Button>
                         </div>
@@ -137,22 +140,22 @@ const Index = () => {
             </CardContent>
           </Card>
           
-          <Card className="data-card">
-            <CardHeader>
-              <CardTitle>Activity Distribution</CardTitle>
+          <Card className="data-card md:col-span-2 lg:col-span-2">
+            <CardHeader className="p-4 md:p-6">
+              <CardTitle className="text-xl md:text-2xl">Activity Distribution</CardTitle>
               <CardDescription>Overview of your data</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 md:p-6 pt-0">
               {pieData.length > 0 ? (
-                <div className="h-64">
+                <div className="h-56 md:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={pieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
+                        innerRadius={40}
+                        outerRadius={70}
                         paddingAngle={5}
                         dataKey="value"
                       >
@@ -166,8 +169,8 @@ const Index = () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-64">
-                  <p className="text-gray-500 mb-4">No data to display</p>
+                <div className="flex flex-col items-center justify-center h-56 md:h-64">
+                  <p className="text-muted-foreground mb-4">No data to display</p>
                   <Button variant="outline" asChild>
                     <Link to="/transactions">
                       Add Data
@@ -179,39 +182,39 @@ const Index = () => {
           </Card>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-          <Card className="data-card bg-electric text-white flex flex-col items-center justify-center p-6">
-            <Activity className="h-12 w-12 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Track Transactions</h3>
-            <p className="text-center mb-4">Log your daily material usage and expenses</p>
-            <Button variant="secondary" className="w-full mt-2" asChild>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-4 md:mt-8 mobile-grid-cols-1">
+          <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
+            <Activity className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Track Transactions</h3>
+            <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Log your daily material usage and expenses</p>
+            <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
               <Link to="/transactions">Go to Transactions</Link>
             </Button>
           </Card>
           
-          <Card className="data-card bg-electric-dark text-white flex flex-col items-center justify-center p-6">
-            <Calculator className="h-12 w-12 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Run Calculations</h3>
-            <p className="text-center mb-4">Generate cost estimates and analyze your data</p>
-            <Button variant="secondary" className="w-full mt-2" asChild>
+          <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
+            <Calculator className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Run Calculations</h3>
+            <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Generate cost estimates and analyze your data</p>
+            <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
               <Link to="/calculations">Go to Calculations</Link>
             </Button>
           </Card>
           
-          <Card className="data-card bg-electric-light text-white flex flex-col items-center justify-center p-6">
-            <Briefcase className="h-12 w-12 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Manage Employees</h3>
-            <p className="text-center mb-4">Assign employees to job sites and track allocations</p>
-            <Button variant="secondary" className="w-full mt-2" asChild>
+          <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
+            <Briefcase className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Manage Employees</h3>
+            <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Assign employees to job sites and track allocations</p>
+            <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
               <Link to="/employees">Go to Employees</Link>
             </Button>
           </Card>
           
-          <Card className="data-card bg-purple-600 text-white flex flex-col items-center justify-center p-6">
-            <Files className="h-12 w-12 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Document Library</h3>
-            <p className="text-center mb-4">Upload and manage important documents</p>
-            <Button variant="secondary" className="w-full mt-2" asChild>
+          <Card className="data-card bg-accent text-accent-foreground flex flex-col items-center justify-center p-4 md:p-6">
+            <Files className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Document Library</h3>
+            <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Upload and manage important documents</p>
+            <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
               <Link to="/docs">Go to Documents</Link>
             </Button>
           </Card>

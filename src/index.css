@@ -92,6 +92,7 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden; /* Prevent horizontal scroll on mobile */
   }
 
   .animate-enter {
@@ -117,19 +118,36 @@
   .sparkle-btn:hover::after {
     transform: translateX(100%);
   }
+  
+  /* Optimize scrollbar for mobile */
+  @media (max-width: 768px) {
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: hsl(var(--muted));
+      border-radius: 4px;
+    }
+  }
 }
 
 @layer components {
   .data-card {
-    @apply bg-card rounded-lg shadow-md p-6 animate-fade-in transition-all duration-300 hover:shadow-lg;
+    @apply bg-card rounded-lg shadow-md transition-all duration-300 hover:shadow-lg;
   }
   
   .page-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+    @apply max-w-7xl mx-auto py-4 sm:py-6 md:py-8;
   }
 
   .section-title {
-    @apply text-2xl font-bold text-foreground mb-6;
+    @apply text-xl sm:text-2xl font-bold text-foreground mb-4 sm:mb-6;
   }
 
   /* Theme transition classes */
@@ -141,12 +159,37 @@
   .icon-hover {
     @apply transition-all duration-200 hover:scale-110;
   }
+  
+  /* Mobile optimized card and button classes */
+  .mobile-card {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+  
+  .mobile-btn {
+    @apply text-sm py-2 px-3 sm:py-2 sm:px-4;
+  }
+  
+  /* Mobile tab scrolling */
+  .scrollable-tabs {
+    @apply flex overflow-x-auto pb-2 -mx-2 px-2;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .scrollable-tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
 }
 
 /* Additional animations for theme transitions */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes spin {
@@ -157,4 +200,11 @@
 /* Dark mode image adjustments */
 [data-theme="dark"] img:not([src*=".svg"]) {
   filter: brightness(0.9) contrast(1.1);
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
 }
