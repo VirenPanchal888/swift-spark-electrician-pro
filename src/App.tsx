@@ -10,6 +10,7 @@ import Transactions from "./pages/Transactions";
 import Calculations from "./pages/Calculations";
 import Employees from "./pages/Employees";
 import Materials from "./pages/Materials";
+import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 import SplashScreen from "./components/SplashScreen";
 
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/calculations" element={<Calculations />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/materials" element={<Materials />} />
+            <Route path="/docs" element={<Docs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

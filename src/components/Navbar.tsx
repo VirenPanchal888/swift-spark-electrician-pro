@@ -1,6 +1,7 @@
+
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Activity, Briefcase, Calculator, LayoutDashboard, Menu, X, FileText } from 'lucide-react';
+import { Activity, Briefcase, Calculator, LayoutDashboard, Menu, X, FileText, Files } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -14,6 +15,7 @@ const Navbar = () => {
     { name: 'Calculations', path: '/calculations', icon: <Calculator className="h-5 w-5" /> },
     { name: 'Employees', path: '/employees', icon: <Briefcase className="h-5 w-5" /> },
     { name: 'Materials', path: '/materials', icon: <FileText className="h-5 w-5" /> },
+    { name: 'Docs', path: '/docs', icon: <Files className="h-5 w-5" /> },
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

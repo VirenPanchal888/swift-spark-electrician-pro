@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Transaction, Employee, MaterialUsage, Material } from './types';
+import { Transaction, Employee, MaterialUsage, Material, Document } from './types';
 
 interface StoreState {
   transactions: Transaction[];
   employees: Employee[];
   materials: Material[];
+  documents: Document[];
   
   // Transaction actions
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -22,6 +23,11 @@ interface StoreState {
   updateMaterial: (material: Material) => void;
   deleteMaterial: (id: string) => void;
   
+  // Document actions
+  addDocument: (document: Omit<Document, 'id' | 'uploadDate'>) => void;
+  updateDocument: (document: Document) => void;
+  deleteDocument: (id: string) => void;
+  
   // Calculation helpers
   calculateTotalCost: () => number;
   calculateMaterialUsage: () => MaterialUsage[];
@@ -33,6 +39,7 @@ export const useStore = create<StoreState>()(
       transactions: [],
       employees: [],
       materials: [],
+      documents: [],
       
       // Transaction actions
       addTransaction: (transaction) => {
@@ -111,6 +118,33 @@ export const useStore = create<StoreState>()(
       deleteMaterial: (id) => {
         set((state) => ({
           materials: state.materials.filter((material) => material.id !== id),
+        }));
+      },
+      
+      // Document actions
+      addDocument: (document) => {
+        const now = new Date().toISOString();
+        const newDocument = {
+          ...document,
+          id: crypto.randomUUID(),
+          uploadDate: now,
+        };
+        set((state) => ({
+          documents: [...state.documents, newDocument],
+        }));
+      },
+      
+      updateDocument: (updatedDocument) => {
+        set((state) => ({
+          documents: state.documents.map((document) => 
+            document.id === updatedDocument.id ? updatedDocument : document
+          ),
+        }));
+      },
+      
+      deleteDocument: (id) => {
+        set((state) => ({
+          documents: state.documents.filter((document) => document.id !== id),
         }));
       },
       

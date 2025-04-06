@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Briefcase, Calculator, Package } from 'lucide-react';
+import { Activity, ArrowRight, Briefcase, Calculator, Package, Files } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { formatRupees } from '@/lib/formatters';
 import TabsMetrics from '@/components/TabsMetrics';
@@ -46,7 +46,7 @@ const Index = () => {
         
         <TabsMetrics />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="data-card lg:col-span-2">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
@@ -179,7 +179,7 @@ const Index = () => {
           </Card>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
           <Card className="data-card bg-electric text-white flex flex-col items-center justify-center p-6">
             <Activity className="h-12 w-12 mb-4" />
             <h3 className="text-xl font-bold mb-2">Track Transactions</h3>
@@ -204,6 +204,15 @@ const Index = () => {
             <p className="text-center mb-4">Assign employees to job sites and track allocations</p>
             <Button variant="secondary" className="w-full mt-2" asChild>
               <Link to="/employees">Go to Employees</Link>
+            </Button>
+          </Card>
+          
+          <Card className="data-card bg-purple-600 text-white flex flex-col items-center justify-center p-6">
+            <Files className="h-12 w-12 mb-4" />
+            <h3 className="text-xl font-bold mb-2">Document Library</h3>
+            <p className="text-center mb-4">Upload and manage important documents</p>
+            <Button variant="secondary" className="w-full mt-2" asChild>
+              <Link to="/docs">Go to Documents</Link>
             </Button>
           </Card>
         </div>

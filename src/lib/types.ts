@@ -36,3 +36,13 @@ export interface Material {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Document {
+  id: string;
+  title: string;
+  description: string;
+  fileUrl: string;
+  fileType: string;
+  fileSize: number;
+  uploadDate: string;
+}
