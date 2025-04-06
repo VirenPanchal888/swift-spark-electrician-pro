@@ -1,4 +1,3 @@
-
 import { useStore } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -7,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Activity, ArrowRight, Briefcase, Calculator, Package } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { formatRupees } from '@/lib/formatters';
+import TabsMetrics from '@/components/TabsMetrics';
 
 const COLORS = ['#0077B6', '#00B4D8', '#90E0EF', '#FFD700'];
 
@@ -44,49 +44,7 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="data-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-normal">Total Spent</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <div className="text-3xl font-bold text-electric">
-                  {formatRupees(totalCost)}
-                </div>
-                <div className="h-8 w-8 text-electric-light">₹</div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="data-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-normal">Materials Used</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <div className="text-3xl font-bold text-electric">
-                  {materialCount}
-                </div>
-                <Package className="h-8 w-8 text-electric-light" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="data-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-500 text-sm font-normal">Active Employees</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <div className="text-3xl font-bold text-electric">
-                  {employees.length}
-                </div>
-                <Briefcase className="h-8 w-8 text-electric-light" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <TabsMetrics />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="data-card lg:col-span-2">
