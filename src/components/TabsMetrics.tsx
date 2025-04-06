@@ -168,7 +168,7 @@ const TabsMetrics = () => {
                       <h3 className="text-xl font-semibold mb-2">Materials Inventory</h3>
                       <CounterAnimation value={materialCount} suffix=" materials" />
                       <p className="text-muted-foreground mt-2">
-                        Used across {new Set(transactions.map(t => t.siteLocation || 'Unknown')).size} sites
+                        Used across multiple sites
                       </p>
                     </div>
                     <div className="mt-4 sm:mt-0 bg-electric-light/10 rounded-full p-6">
