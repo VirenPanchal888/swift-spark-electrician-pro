@@ -36,10 +36,11 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {showSplash && (
+            {showSplash ? (
               <Route path="/" element={<SplashScreen />} />
+            ) : (
+              <Route path="/" element={<Index />} />
             )}
-            <Route path="/" element={<Index />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/calculations" element={<Calculations />} />
             <Route path="/employees" element={<Employees />} />
