@@ -45,6 +45,45 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  [data-theme="dark"] {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 6.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 6.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 201 100% 40%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 43 96% 56%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --sidebar-background: 222.2 84% 6.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 201 100% 40%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 224.3 76.3% 48%;
+  }
+
   * {
     @apply border-border;
   }
@@ -52,6 +91,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .animate-enter {
@@ -81,7 +121,7 @@
 
 @layer components {
   .data-card {
-    @apply bg-white rounded-lg shadow-md p-6 animate-fade-in transition-all duration-300 hover:shadow-lg;
+    @apply bg-card rounded-lg shadow-md p-6 animate-fade-in transition-all duration-300 hover:shadow-lg;
   }
   
   .page-container {
@@ -89,6 +129,32 @@
   }
 
   .section-title {
-    @apply text-2xl font-bold text-gray-900 mb-6;
+    @apply text-2xl font-bold text-foreground mb-6;
   }
+
+  /* Theme transition classes */
+  .theme-transition {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+  
+  /* Icon animation class */
+  .icon-hover {
+    @apply transition-all duration-200 hover:scale-110;
+  }
+}
+
+/* Additional animations for theme transitions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Dark mode image adjustments */
+[data-theme="dark"] img:not([src*=".svg"]) {
+  filter: brightness(0.9) contrast(1.1);
 }

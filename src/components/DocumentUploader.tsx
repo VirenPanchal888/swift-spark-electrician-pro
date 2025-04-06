@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Camera, FileIcon, Upload, X } from 'lucide-react';
+import { Camera, FileIcon, Upload, X, ImagePlus, File } from 'lucide-react';
 import { FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -125,6 +125,7 @@ const DocumentUploader = () => {
             <Input 
               placeholder="Enter a title for your document" 
               {...form.register('title')}
+              className="theme-transition"
             />
           </FormControl>
           <FormMessage>{form.formState.errors.title?.message}</FormMessage>
@@ -135,7 +136,7 @@ const DocumentUploader = () => {
           <FormControl>
             <Textarea 
               placeholder="Add a description" 
-              className="resize-none" 
+              className="resize-none theme-transition" 
               {...form.register('description')}
             />
           </FormControl>
@@ -148,20 +149,20 @@ const DocumentUploader = () => {
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 icon-hover theme-transition"
               onClick={triggerFileInput}
             >
-              <FileIcon className="mr-2 h-4 w-4" />
+              <File className="mr-2 h-5 w-5" />
               Select File
             </Button>
             
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 icon-hover theme-transition"
               onClick={triggerCameraInput}
             >
-              <Camera className="mr-2 h-4 w-4" />
+              <ImagePlus className="mr-2 h-5 w-5" />
               Use Camera
             </Button>
             
@@ -184,7 +185,7 @@ const DocumentUploader = () => {
           </div>
           
           {filePreview && (
-            <div className="relative mt-4 border border-border rounded-md p-2">
+            <div className="relative mt-4 border border-border rounded-md p-2 theme-transition">
               <Button
                 type="button"
                 variant="ghost"
@@ -231,14 +232,14 @@ const DocumentUploader = () => {
         
         <Button
           type="submit"
-          className="w-full bg-electric hover:bg-electric-dark"
+          className="w-full bg-primary hover:bg-primary/80 text-primary-foreground sparkle-btn"
           disabled={isUploading || !form.getValues('file')}
         >
           {isUploading ? (
             <>Uploading...</>
           ) : (
             <>
-              <Upload className="mr-2 h-4 w-4" /> 
+              <Upload className="mr-2 h-5 w-5" /> 
               Upload Document
             </>
           )}

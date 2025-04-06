@@ -1,13 +1,50 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Activity, Briefcase, Calculator, LayoutDashboard, Menu, X, FileText, Files } from 'lucide-react';
+import { 
+  Activity, 
+  Briefcase, 
+  Calculator, 
+  LayoutDashboard, 
+  Menu, 
+  X, 
+  FileText, 
+  Files, 
+  Sun, 
+  Moon 
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 const Navbar = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { toast } = useToast();
+  
+  // Load theme preference from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  }, []);
+
+  // Toggle theme function
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    toast({
+      title: `${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} theme activated`,
+      description: `The application is now using ${newTheme} mode.`,
+      duration: 2000,
+    });
+  };
   
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
@@ -21,12 +58,12 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-card shadow-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-electric font-bold text-xl">Powerhouse Solutions</span>
+              <span className="text-primary font-bold text-xl">Powerhouse Solutions</span>
             </div>
             
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -37,8 +74,8 @@ const Navbar = () => {
                   className={cn(
                     "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors",
                     location.pathname === item.path
-                      ? "border-electric text-electric-dark"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      ? "border-primary text-primary-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                   )}
                 >
                   {item.icon}
@@ -48,19 +85,36 @@ const Navbar = () => {
             </div>
           </div>
           
-          <div className="flex items-center sm:hidden">
+          <div className="flex items-center space-x-4">
+            {/* Theme toggle button */}
             <Button 
               variant="ghost" 
               size="icon" 
-              onClick={toggleMenu}
-              aria-expanded={isMenuOpen}
+              onClick={toggleTheme}
+              className="rounded-full hover:bg-primary/10 transition-colors"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
             >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
+              {theme === 'dark' ? (
+                <Sun className="h-5 w-5 text-accent animate-fade-in" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Moon className="h-5 w-5 text-primary animate-fade-in" />
               )}
             </Button>
+            
+            <div className="sm:hidden">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleMenu}
+                aria-expanded={isMenuOpen}
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -75,8 +129,8 @@ const Navbar = () => {
                 className={cn(
                   "flex items-center px-3 py-2 text-base font-medium border-l-4",
                   location.pathname === item.path
-                    ? "border-electric text-electric bg-blue-50"
-                    : "border-transparent text-gray-600 hover:bg-gray-50"
+                    ? "border-primary text-primary bg-secondary"
+                    : "border-transparent text-muted-foreground hover:bg-secondary/50"
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >

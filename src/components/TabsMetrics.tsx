@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatRupees } from '@/lib/formatters';
-import { Package, Briefcase } from 'lucide-react';
+import { Package2, Users, CreditCard } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { useStore } from '@/lib/store';
@@ -61,7 +61,7 @@ const TabsMetrics = () => {
     }, [value]);
     
     return (
-      <div className="text-3xl font-bold text-electric">
+      <div className="text-3xl font-bold text-primary">
         {prefix}{typeof value === 'string' && value.includes('₹') 
           ? formatRupees(count) 
           : count}{suffix}
@@ -79,28 +79,28 @@ const TabsMetrics = () => {
         <TabsList className="w-full grid grid-cols-3 mb-4">
           <TabsTrigger 
             value="totalSpent"
-            className="data-[state=active]:bg-electric data-[state=active]:text-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <span className="flex items-center">
-              <span className="mr-2 text-xl">₹</span>
+              <CreditCard className="mr-2 h-4 w-4" />
               <span>Total Spent</span>
             </span>
           </TabsTrigger>
           <TabsTrigger 
             value="materialsUsed"
-            className="data-[state=active]:bg-electric-light data-[state=active]:text-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <span className="flex items-center">
-              <Package className="mr-2 h-4 w-4" />
+              <Package2 className="mr-2 h-4 w-4" />
               <span>Materials Used</span>
             </span>
           </TabsTrigger>
           <TabsTrigger 
             value="activeEmployees"
-            className="data-[state=active]:bg-electric-dark data-[state=active]:text-white"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             <span className="flex items-center">
-              <Briefcase className="mr-2 h-4 w-4" />
+              <Users className="mr-2 h-4 w-4" />
               <span>Active Employees</span>
             </span>
           </TabsTrigger>
@@ -115,7 +115,7 @@ const TabsMetrics = () => {
               animate="visible"
               exit="exit"
             >
-              <Card className="border-electric/20 shadow-lg overflow-hidden">
+              <Card className="border-border shadow-lg overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
                     <div>
@@ -125,12 +125,12 @@ const TabsMetrics = () => {
                         {transactions.length} total transactions
                       </p>
                     </div>
-                    <div className="mt-4 sm:mt-0 bg-electric/10 rounded-full p-6">
-                      <div className="text-5xl text-electric">₹</div>
+                    <div className="mt-4 sm:mt-0 bg-primary/10 rounded-full p-6">
+                      <CreditCard className="text-primary h-12 w-12" />
                     </div>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t">
+                  <div className="mt-6 pt-6 border-t border-border">
                     <h4 className="font-medium mb-3">Recent Transactions</h4>
                     <div className="space-y-2">
                       {transactions.slice(0, 3).map((transaction) => (
@@ -161,7 +161,7 @@ const TabsMetrics = () => {
               animate="visible"
               exit="exit"
             >
-              <Card className="border-electric-light/20 shadow-lg overflow-hidden">
+              <Card className="border-border shadow-lg overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
                     <div>
@@ -171,12 +171,12 @@ const TabsMetrics = () => {
                         Used across multiple sites
                       </p>
                     </div>
-                    <div className="mt-4 sm:mt-0 bg-electric-light/10 rounded-full p-6">
-                      <Package className="text-electric-light h-12 w-12" />
+                    <div className="mt-4 sm:mt-0 bg-primary/10 rounded-full p-6">
+                      <Package2 className="text-primary h-12 w-12" />
                     </div>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t">
+                  <div className="mt-6 pt-6 border-t border-border">
                     <h4 className="font-medium mb-3">Top Materials</h4>
                     <div className="space-y-2">
                       {calculateMaterialUsage().slice(0, 3).map((material) => (
@@ -207,7 +207,7 @@ const TabsMetrics = () => {
               animate="visible"
               exit="exit"
             >
-              <Card className="border-electric-dark/20 shadow-lg overflow-hidden">
+              <Card className="border-border shadow-lg overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
                     <div>
@@ -217,12 +217,12 @@ const TabsMetrics = () => {
                         Working across {new Set(employees.map(e => e.siteLocation)).size} locations
                       </p>
                     </div>
-                    <div className="mt-4 sm:mt-0 bg-electric-dark/10 rounded-full p-6">
-                      <Briefcase className="text-electric-dark h-12 w-12" />
+                    <div className="mt-4 sm:mt-0 bg-primary/10 rounded-full p-6">
+                      <Users className="text-primary h-12 w-12" />
                     </div>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t">
+                  <div className="mt-6 pt-6 border-t border-border">
                     <h4 className="font-medium mb-3">Team Members</h4>
                     <div className="space-y-2">
                       {employees.slice(0, 3).map((employee) => (
@@ -233,7 +233,7 @@ const TabsMetrics = () => {
                               {employee.siteLocation}
                             </p>
                           </div>
-                          <span className="text-sm px-2 py-1 bg-electric-dark/10 rounded-full">
+                          <span className="text-sm px-2 py-1 bg-primary/10 rounded-full">
                             Since {new Date(employee.startDate).toLocaleDateString()}
                           </span>
                         </div>

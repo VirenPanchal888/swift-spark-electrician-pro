@@ -28,6 +28,10 @@ const App = () => {
     } else {
       sessionStorage.setItem("hasVisited", "true");
     }
+    
+    // Initialize theme from localStorage or set default
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
   return (
