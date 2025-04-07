@@ -69,7 +69,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
         onAddTask={handleAddTask}
       />
       
-      <div className="kanban-container">
+      <div className="kanban-container flex flex-col md:flex-row gap-4">
         <KanbanColumn
           title={<>
             <AlertCircle className="h-4 w-4 mr-2 text-yellow-500" />
