@@ -5,7 +5,11 @@ import { motion } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Progress } from '@/components/ui/progress';
 
-const SplashScreen = () => {
+interface SplashScreenProps {
+  onComplete?: () => void;
+}
+
+const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
   const [redirect, setRedirect] = useState(false);
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
@@ -18,6 +22,9 @@ const SplashScreen = () => {
     
     const timer = setTimeout(() => {
       setRedirect(true);
+      if (onComplete) {
+        onComplete();
+      }
     }, totalDuration);
     
     const progressTimer = setInterval(() => {
@@ -31,7 +38,7 @@ const SplashScreen = () => {
       clearTimeout(timer);
       clearInterval(progressTimer);
     };
-  }, []);
+  }, [onComplete]);
 
   if (redirect) {
     return <Navigate to="/" replace />;
