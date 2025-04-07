@@ -13,11 +13,8 @@ interface TaskItemProps {
 
 const TaskItem = ({ task, employees, onDragStart }: TaskItemProps) => {
   // Create a handler that properly casts the event
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
-    // Only proceed if we have a proper drag event with dataTransfer
-    if ('dataTransfer' in e.nativeEvent) {
-      onDragStart(e as React.DragEvent<HTMLDivElement>, task);
-    }
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    onDragStart(e, task);
   };
 
   return (

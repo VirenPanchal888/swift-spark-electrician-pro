@@ -28,7 +28,7 @@ const KanbanColumn = ({
 }: KanbanColumnProps) => {
   return (
     <div
-      className="kanban-column"
+      className="kanban-column mb-4"
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, status)}
     >
