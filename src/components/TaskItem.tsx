@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
-import { motion, PanInfo } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { SiteTask } from '@/lib/types';
 import { Employee } from '@/lib/types';
 
@@ -12,17 +12,8 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, employees, onDragStart }: TaskItemProps) => {
-  // Create a handler that works with Framer Motion's event system
-  const handleDragStart = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    // Only proceed if we have a proper drag event with dataTransfer
-    if (event instanceof DragEvent && 'dataTransfer' in event) {
-      // Cast to React.DragEvent<HTMLDivElement> since we're in a React component
-      onDragStart(event as unknown as React.DragEvent<HTMLDivElement>, task);
-    }
-  };
-
-  // Additionally, add a native dragStart handler to ensure compatibility
-  const handleNativeDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+  // Create a handler that properly casts the event
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     onDragStart(e, task);
   };
 
@@ -31,7 +22,7 @@ const TaskItem = ({ task, employees, onDragStart }: TaskItemProps) => {
       key={task.id}
       className="kanban-item"
       draggable
-      onDragStart={handleNativeDragStart}
+      onDragStart={handleDragStart}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
