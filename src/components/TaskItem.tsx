@@ -12,12 +12,20 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ task, employees, onDragStart }: TaskItemProps) => {
+  // Create a handler that properly casts the event
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
+    // Only proceed if we have a proper drag event with dataTransfer
+    if ('dataTransfer' in e.nativeEvent) {
+      onDragStart(e as React.DragEvent<HTMLDivElement>, task);
+    }
+  };
+
   return (
     <motion.div
       key={task.id}
       className="kanban-item"
       draggable
-      onDragStart={(e) => onDragStart(e, task)}
+      onDragStart={handleDragStart}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
