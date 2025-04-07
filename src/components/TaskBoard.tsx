@@ -182,7 +182,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
+                  onDragStart={(e) => handleDragStart(e as React.DragEvent<HTMLDivElement>, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -234,7 +234,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
+                  onDragStart={(e) => handleDragStart(e as React.DragEvent<HTMLDivElement>, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -286,7 +286,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
+                  onDragStart={(e) => handleDragStart(e as React.DragEvent<HTMLDivElement>, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
