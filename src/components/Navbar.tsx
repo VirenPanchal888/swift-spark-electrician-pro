@@ -1,148 +1,152 @@
 
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Activity, 
-  Briefcase, 
   Calculator, 
-  LayoutDashboard, 
   Menu, 
-  X, 
+  Home, 
+  Users, 
+  Box, 
   FileText, 
-  Files, 
   Sun, 
-  Moon 
+  Moon,
+  Building 
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
-import { useToast } from '@/components/ui/use-toast';
 
 const Navbar = () => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const isMobile = useIsMobile();
   const { toast } = useToast();
-  
-  // Load theme preference from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-  }, []);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Toggle theme function
+  // Load theme from localStorage on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 'light';
+    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+  
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     
     toast({
-      title: `${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} theme activated`,
-      description: `The application is now using ${newTheme} mode.`,
-      duration: 2000,
+      title: `${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} Theme Activated`,
+      description: `The application is now using the ${newTheme} theme.`
     });
   };
-  
+
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
-    { name: 'Transactions', path: '/transactions', icon: <Activity className="h-5 w-5" /> },
-    { name: 'Calculations', path: '/calculations', icon: <Calculator className="h-5 w-5" /> },
-    { name: 'Employees', path: '/employees', icon: <Briefcase className="h-5 w-5" /> },
-    { name: 'Materials', path: '/materials', icon: <FileText className="h-5 w-5" /> },
-    { name: 'Docs', path: '/docs', icon: <Files className="h-5 w-5" /> },
+    { path: '/', label: 'Dashboard', icon: <Home className="h-4 w-4" /> },
+    { path: '/transactions', label: 'Transactions', icon: <Activity className="h-4 w-4" /> },
+    { path: '/calculations', label: 'Calculations', icon: <Calculator className="h-4 w-4" /> },
+    { path: '/employees', label: 'Employees', icon: <Users className="h-4 w-4" /> },
+    { path: '/materials', label: 'Materials', icon: <Box className="h-4 w-4" /> },
+    { path: '/sites', label: 'Site Tracker', icon: <Building className="h-4 w-4" /> },
+    { path: '/docs', label: 'Documents', icon: <FileText className="h-4 w-4" /> },
   ];
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const isActiveLink = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const renderNavLinks = () => {
+    return navItems.map((item) => (
+      <Button
+        key={item.path}
+        variant={isActiveLink(item.path) ? "default" : "ghost"}
+        asChild
+        className={isActiveLink(item.path) ? "bg-primary text-primary-foreground" : ""}
+        onClick={isMobile ? closeMobileMenu : undefined}
+      >
+        <Link to={item.path}>
+          {item.icon}
+          <span className="ml-2">{item.label}</span>
+        </Link>
+      </Button>
+    ));
+  };
 
   return (
-    <nav className="bg-card shadow-sm border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
-              <span className="text-primary font-bold text-xl">Powerhouse</span>
-              <span className="text-primary font-bold text-xl mobile-hidden">Solutions</span>
-            </div>
-            
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-4 md:space-x-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors",
-                    location.pathname === item.path
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
-                  )}
-                >
-                  {item.icon}
-                  <span className="ml-1 md:ml-2">{item.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-2 md:space-x-4">
-            {/* Theme toggle button */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleTheme}
-              className="rounded-full hover:bg-primary/10 transition-colors"
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-            >
-              {theme === 'dark' ? (
-                <Sun className="h-5 w-5 text-accent animate-fade-in" />
-              ) : (
-                <Moon className="h-5 w-5 text-primary animate-fade-in" />
-              )}
-            </Button>
-            
-            <div className="sm:hidden">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleMenu}
-                aria-expanded={isMenuOpen}
-              >
-                {isMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
-              </Button>
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center justify-between">
+        <div className="flex items-center gap-2 mr-4">
+          <Link to="/" className="font-bold text-xl flex items-center">
+            <Activity className="h-5 w-5 mr-1 text-primary" />
+            Powerhouse
+          </Link>
         </div>
-      </div>
 
-      {isMenuOpen && (
-        <div className="sm:hidden animate-slide-up">
-          <div className="pt-2 pb-3 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={cn(
-                  "flex items-center px-3 py-3 text-base font-medium border-l-4", // Increased tap target size
-                  location.pathname === item.path
-                    ? "border-primary text-primary bg-secondary"
-                    : "border-transparent text-muted-foreground hover:bg-secondary/50"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.icon}
-                <span className="ml-3">{item.name}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </nav>
+        {/* Desktop Navigation */}
+        {!isMobile && (
+          <nav className="flex items-center gap-2 mx-4">
+            {renderNavLinks()}
+          </nav>
+        )}
+
+        {/* Mobile Menu Button */}
+        {isMobile && (
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="flex flex-col">
+              <div className="font-bold text-xl flex items-center mb-8">
+                <Activity className="h-5 w-5 mr-1 text-primary" />
+                Powerhouse
+              </div>
+              <nav className="flex flex-col gap-2">
+                {renderNavLinks()}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        )}
+
+        {/* Theme Toggle */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={toggleTheme}>
+              {theme === 'light' ? (
+                <>
+                  <Moon className="h-4 w-4 mr-2" />
+                  Dark Mode
+                </>
+              ) : (
+                <>
+                  <Sun className="h-4 w-4 mr-2" />
+                  Light Mode
+                </>
+              )}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
   );
 };
 

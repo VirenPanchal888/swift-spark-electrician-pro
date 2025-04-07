@@ -4,15 +4,15 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Briefcase, Calculator, Package, Files } from 'lucide-react';
+import { Activity, ArrowRight, Briefcase, Calculator, Package, Files, Building } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { formatRupees } from '@/lib/formatters';
 import TabsMetrics from '@/components/TabsMetrics';
 
-const COLORS = ['#0077B6', '#00B4D8', '#90E0EF', '#FFD700'];
+const COLORS = ['#0077B6', '#00B4D8', '#90E0EF', '#FFD700', '#FD7E14'];
 
 const Index = () => {
-  const { transactions, employees, calculateTotalCost, calculateMaterialUsage } = useStore();
+  const { transactions, employees, sites, calculateTotalCost, calculateMaterialUsage } = useStore();
   
   const totalCost = calculateTotalCost();
   const materialCount = calculateMaterialUsage().length;
@@ -22,6 +22,7 @@ const Index = () => {
     { name: 'Materials', value: materialCount },
     { name: 'Employees', value: employees.length },
     { name: 'Transactions', value: transactions.length },
+    { name: 'Sites', value: sites.length }
   ] : [];
 
   return (
@@ -135,6 +136,35 @@ const Index = () => {
                       )}
                     </div>
                   )}
+
+                  {sites.length > 0 && (
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2 md:mb-3">Active Sites</h3>
+                      <div className="space-y-2">
+                        {sites.slice(0, 3).map((site) => (
+                          <div key={site.id} className="flex justify-between items-center p-2 md:p-3 bg-secondary rounded-md">
+                            <div>
+                              <p className="font-medium text-sm md:text-base">{site.name}</p>
+                              <p className="text-xs md:text-sm text-muted-foreground">{site.location}</p>
+                            </div>
+                            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                              {site.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      {sites.length > 3 && (
+                        <div className="mt-3 text-right">
+                          <Button variant="link" className="text-primary px-0 text-sm" asChild>
+                            <Link to="/sites">
+                              View all sites
+                              <ArrowRight className="ml-1 h-3 w-3 md:h-4 md:w-4" />
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -182,7 +212,7 @@ const Index = () => {
           </Card>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-4 md:mt-8 mobile-grid-cols-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 mt-4 md:mt-8 mobile-grid-cols-1">
           <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
             <Activity className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
             <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Track Transactions</h3>
@@ -210,6 +240,15 @@ const Index = () => {
             </Button>
           </Card>
           
+          <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
+            <Building className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Site Tracker</h3>
+            <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Monitor projects, materials and employees at each site</p>
+            <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
+              <Link to="/sites">Go to Sites</Link>
+            </Button>
+          </Card>
+          
           <Card className="data-card bg-accent text-accent-foreground flex flex-col items-center justify-center p-4 md:p-6">
             <Files className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
             <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Document Library</h3>
@@ -225,3 +264,8 @@ const Index = () => {
 };
 
 export default Index;
+
+// Add the missing Building icon
+function Building(props: any) {
+  return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+}
