@@ -63,15 +63,15 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
     setIsAddingTask(false);
   };
   
-  const handleDragStart = (e: React.DragEvent, task: SiteTask) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, task: SiteTask) => {
     e.dataTransfer.setData('taskId', task.id);
   };
   
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
   
-  const handleDrop = (e: React.DragEvent, status: TaskStatus) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, status: TaskStatus) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('taskId');
     updateTaskStatus(taskId, status);
@@ -164,7 +164,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
         <div 
           className="kanban-column"
           onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, 'pending')}
+          onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e, 'pending')}
         >
           <div className="kanban-column-header bg-muted/30">
             <span className="flex items-center">
@@ -182,7 +182,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e) => handleDragStart(e, task)}
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -216,7 +216,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
         <div 
           className="kanban-column"
           onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, 'in-progress')}
+          onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e, 'in-progress')}
         >
           <div className="kanban-column-header bg-muted/30">
             <span className="flex items-center">
@@ -234,7 +234,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e) => handleDragStart(e, task)}
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -268,7 +268,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
         <div 
           className="kanban-column"
           onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, 'completed')}
+          onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e, 'completed')}
         >
           <div className="kanban-column-header bg-muted/30">
             <span className="flex items-center">
@@ -286,7 +286,7 @@ const TaskBoard = ({ siteId }: TaskBoardProps) => {
                   key={task.id}
                   className="kanban-item"
                   draggable
-                  onDragStart={(e) => handleDragStart(e, task)}
+                  onDragStart={(e: React.DragEvent<HTMLDivElement>) => handleDragStart(e, task)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}

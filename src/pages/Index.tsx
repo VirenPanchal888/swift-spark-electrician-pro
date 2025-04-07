@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowRight, Briefcase, Calculator, Package, Files, Building } from 'lucide-react';
+import { Activity, ArrowRight, Briefcase, Calculator, Package, Files } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { formatRupees } from '@/lib/formatters';
 import TabsMetrics from '@/components/TabsMetrics';
@@ -241,7 +241,7 @@ const Index = () => {
           </Card>
           
           <Card className="data-card bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 md:p-6">
-            <Building className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
+            <BuildingIcon className="h-8 w-8 md:h-12 md:w-12 mb-3 md:mb-4" />
             <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Site Tracker</h3>
             <p className="text-center mb-3 md:mb-4 text-sm md:text-base">Monitor projects, materials and employees at each site</p>
             <Button variant="secondary" className="w-full mt-1 md:mt-2 text-sm" asChild>
@@ -265,7 +265,7 @@ const Index = () => {
 
 export default Index;
 
-// Add the missing Building icon
-function Building(props: any) {
+// Renamed Building to BuildingIcon to avoid naming conflict
+function BuildingIcon(props: any) {
   return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
 }

@@ -22,7 +22,8 @@ import {
   CirclePause, 
   CircleAlert,
   Plus,
-  Search
+  Search,
+  Clock
 } from 'lucide-react';
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { SiteStatus } from '@/lib/types';
