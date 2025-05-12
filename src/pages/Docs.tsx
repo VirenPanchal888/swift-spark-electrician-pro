@@ -22,7 +22,7 @@ const Docs = () => {
       <main className="page-container animate-fade-in">
         <div className="flex flex-col justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">📑 Document Management</h1>
+            <h1 className="font-bold text-gray-900 text-2xl">📑 Document Management</h1>
             <p className="text-gray-600 mt-2">Upload, view, and manage your documents and images</p>
           </div>
         </div>
