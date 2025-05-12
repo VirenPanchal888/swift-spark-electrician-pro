@@ -104,7 +104,7 @@ const Navbar = () => {
             y: 0
           }} transition={{
             duration: 0.3
-          }}>👨🏻‍🔧Powerhouse</motion.span>
+          }} className="text-xl">👨🏻‍🔧Powerhouse</motion.span>
           </Link>
         </div>
 
