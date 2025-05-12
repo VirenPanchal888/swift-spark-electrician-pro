@@ -58,7 +58,7 @@ const Index = () => {
   return <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container py-6 space-y-6">
-        <h1 className="text-2xl font-bold mb-6">🛠 Electrician Dashboard (Navigate to the different dashboards)</h1>
+        <h1 className="font-bold mb-6 text-xl">🛠 Electrician Dashboard (Navigate to the different dashboards)</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((feature, index) => <Card key={index} className="hover:border-primary/50 cursor-pointer transition-all hover:shadow-md" onClick={() => navigate(feature.path)}>
