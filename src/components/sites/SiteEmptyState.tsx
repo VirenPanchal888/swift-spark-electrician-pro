@@ -1,6 +1,7 @@
 
 import { Building2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SiteDataStats } from '@/components/sync/SiteDataStats';
 
 interface SiteEmptyStateProps {
   sitesCount: number;
@@ -22,6 +23,10 @@ const SiteEmptyState = ({ sitesCount, onAddSiteClick }: SiteEmptyStateProps) => 
           <Plus className="h-4 w-4 mr-2" /> Create Site
         </Button>
       )}
+      
+      <div className="mt-8 w-full max-w-md">
+        <SiteDataStats />
+      </div>
     </div>
   );
 };

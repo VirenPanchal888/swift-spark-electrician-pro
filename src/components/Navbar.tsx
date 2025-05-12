@@ -23,6 +23,7 @@ import {
   Moon,
   Building 
 } from 'lucide-react';
+import { BackupControlPanel } from './sync/BackupControlPanel';
 
 const Navbar = () => {
   const location = useLocation();
@@ -122,29 +123,35 @@ const Navbar = () => {
           </Sheet>
         )}
 
-        {/* Theme Toggle */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={toggleTheme}>
-              {theme === 'light' ? (
-                <>
-                  <Moon className="h-4 w-4 mr-2" />
-                  Dark Mode
-                </>
-              ) : (
-                <>
-                  <Sun className="h-4 w-4 mr-2" />
-                  Light Mode
-                </>
-              )}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2">
+          {/* Backup Control Panel */}
+          <BackupControlPanel />
+
+          {/* Theme Toggle */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={toggleTheme}>
+                {theme === 'light' ? (
+                  <>
+                    <Moon className="h-4 w-4 mr-2" />
+                    Dark Mode
+                  </>
+                ) : (
+                  <>
+                    <Sun className="h-4 w-4 mr-2" />
+                    Light Mode
+                  </>
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
