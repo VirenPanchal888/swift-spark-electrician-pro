@@ -54,13 +54,15 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
       startDate: startDate.toISOString()
     };
     
+    // Store the new site ID after adding the site
     const newSite = addSite(newSiteData);
+    const newSiteId = newSite.id;
     
     // Add workers to the site if any are selected
     if (selectedWorkers.length > 0) {
       selectedWorkers.forEach(worker => {
         addSiteEmployee({
-          siteId: newSite.id,
+          siteId: newSiteId,
           employeeId: worker.employeeId,
           role: worker.role,
           shift: "day",  // Default value

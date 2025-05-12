@@ -35,7 +35,7 @@ interface StoreState {
   deleteDocument: (id: string) => void;
   
   // Site actions
-  addSite: (site: Omit<Site, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  addSite: (site: Omit<Site, 'id' | 'createdAt' | 'updatedAt'>) => Site;
   updateSite: (site: Site) => void;
   deleteSite: (id: string) => void;
   
@@ -201,9 +201,12 @@ export const useStore = create<StoreState>()(
           createdAt: now,
           updatedAt: now,
         };
+        
         set((state) => ({
           sites: [...state.sites, newSite],
         }));
+        
+        return newSite; // Return the newly created site
       },
       
       updateSite: (updatedSite) => {
