@@ -1,7 +1,6 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Transaction, Employee, MaterialUsage, Material, Document, Site, SiteEmployee, SiteMaterial, SiteTask, SiteDocument, TaskStatus } from './types';
+import { Transaction, Employee, MaterialUsage, Material, Document, Site, SiteEmployee, SiteMaterial, SiteTask, SiteDocument, TaskStatus, SalaryRecord } from './types';
 
 interface StoreState {
   transactions: Transaction[];
@@ -13,6 +12,7 @@ interface StoreState {
   siteMaterials: SiteMaterial[];
   siteTasks: SiteTask[];
   siteDocuments: SiteDocument[];
+  salaryRecords: SalaryRecord[];
   
   // Transaction actions
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -60,6 +60,12 @@ interface StoreState {
   updateSiteDocument: (siteDocument: SiteDocument) => void;
   deleteSiteDocument: (id: string) => void;
   
+  // Salary Record actions
+  addSalaryRecord: (salaryRecord: Omit<SalaryRecord, 'id'>) => void;
+  updateSalaryRecord: (salaryRecord: SalaryRecord) => void;
+  deleteSalaryRecord: (id: string) => void;
+  getSalaryRecordsByEmployee: (employeeName: string) => SalaryRecord[];
+  
   // Calculation helpers
   calculateTotalCost: () => number;
   calculateMaterialUsage: () => MaterialUsage[];
@@ -84,6 +90,7 @@ export const useStore = create<StoreState>()(
       siteMaterials: [],
       siteTasks: [],
       siteDocuments: [],
+      salaryRecords: [],
       
       // Transaction actions
       addTransaction: (transaction) => {
@@ -341,6 +348,42 @@ export const useStore = create<StoreState>()(
         set((state) => ({
           siteDocuments: state.siteDocuments.filter((siteDocument) => siteDocument.id !== id),
         }));
+      },
+      
+      // Salary Record actions
+      addSalaryRecord: (salaryRecord) => {
+        const newSalaryRecord = {
+          ...salaryRecord,
+          id: crypto.randomUUID(),
+        };
+        set((state) => ({
+          salaryRecords: [newSalaryRecord, ...state.salaryRecords],
+        }));
+      },
+      
+      updateSalaryRecord: (updatedSalaryRecord) => {
+        set((state) => ({
+          salaryRecords: state.salaryRecords.map((salaryRecord) => 
+            salaryRecord.id === updatedSalaryRecord.id ? updatedSalaryRecord : salaryRecord
+          ),
+        }));
+      },
+      
+      deleteSalaryRecord: (id) => {
+        set((state) => ({
+          salaryRecords: state.salaryRecords.filter((salaryRecord) => salaryRecord.id !== id),
+        }));
+      },
+      
+      getSalaryRecordsByEmployee: (employeeName) => {
+        return get().salaryRecords
+          .filter((record) => record.employeeName.toLowerCase() === employeeName.toLowerCase())
+          .sort((a, b) => {
+            // Sort by date and time in descending order (newest first)
+            const dateA = new Date(`${a.date} ${a.time}`).getTime();
+            const dateB = new Date(`${b.date} ${b.time}`).getTime();
+            return dateB - dateA;
+          });
       },
       
       // Calculation helpers

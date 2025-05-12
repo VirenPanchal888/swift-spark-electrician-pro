@@ -103,3 +103,12 @@ export interface SiteDocument {
   uploadDate: string;
   type: string;
 }
+
+export interface SalaryRecord {
+  id: string;
+  employeeName: string;
+  salaryPaid: number;
+  screenshot?: string;
+  date: string;
+  time: string;
+}
