@@ -191,7 +191,7 @@ export const SalaryForm = ({ onViewRecords }: SalaryFormProps) => {
       worksheetData.push([
         record.date,
         record.time,
-        record.salaryPaid,
+        record.salaryPaid.toString(), // Convert number to string
         ""
       ]);
     });
