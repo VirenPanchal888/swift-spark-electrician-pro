@@ -5,7 +5,7 @@ const Calculations = () => {
       <Navbar />
       
       <main className="page-container animate-fade-in">
-        <h1 className="font-bold text-gray-900 mb-8 text-2xl">🖩 Calculation & Analysis</h1>
+        <h1 className="font-bold text-gray-900 mb-8 text-2xl">🖩 Calculation & Analysis</h1>
         
         <CalculationTool />
       </main>
