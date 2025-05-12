@@ -1,6 +1,7 @@
 
 import { useStore } from './store';
 import { toast } from '@/hooks/use-toast';
+import * as XLSX from 'xlsx';
 
 // Type for backup format
 export interface BackupData {
@@ -64,6 +65,64 @@ export const exportData = () => {
   URL.revokeObjectURL(url);
 };
 
+// Export data to Excel file
+export const exportToExcel = () => {
+  const store = useStore.getState();
+  
+  // Create workbook with multiple sheets
+  const wb = XLSX.utils.book_new();
+  
+  // Add transactions sheet
+  if (store.transactions.length > 0) {
+    const transactionsWS = XLSX.utils.json_to_sheet(store.transactions);
+    XLSX.utils.book_append_sheet(wb, transactionsWS, "Transactions");
+  }
+  
+  // Add employees sheet
+  if (store.employees.length > 0) {
+    const employeesWS = XLSX.utils.json_to_sheet(store.employees);
+    XLSX.utils.book_append_sheet(wb, employeesWS, "Employees");
+  }
+  
+  // Add materials sheet
+  if (store.materials.length > 0) {
+    const materialsWS = XLSX.utils.json_to_sheet(store.materials);
+    XLSX.utils.book_append_sheet(wb, materialsWS, "Materials");
+  }
+  
+  // Add sites sheet
+  if (store.sites.length > 0) {
+    const sitesWS = XLSX.utils.json_to_sheet(store.sites);
+    XLSX.utils.book_append_sheet(wb, sitesWS, "Sites");
+  }
+  
+  // Add site employees sheet
+  if (store.siteEmployees.length > 0) {
+    const siteEmployeesWS = XLSX.utils.json_to_sheet(store.siteEmployees);
+    XLSX.utils.book_append_sheet(wb, siteEmployeesWS, "Site Employees");
+  }
+  
+  // Add site materials sheet
+  if (store.siteMaterials.length > 0) {
+    const siteMaterialsWS = XLSX.utils.json_to_sheet(store.siteMaterials);
+    XLSX.utils.book_append_sheet(wb, siteMaterialsWS, "Site Materials");
+  }
+  
+  // Add site tasks sheet
+  if (store.siteTasks.length > 0) {
+    const siteTasksWS = XLSX.utils.json_to_sheet(store.siteTasks);
+    XLSX.utils.book_append_sheet(wb, siteTasksWS, "Site Tasks");
+  }
+  
+  // Write workbook and trigger download
+  XLSX.writeFile(wb, `powerhouse_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+  
+  toast({
+    title: "Excel Export Successful",
+    description: "Your data has been exported to an Excel file"
+  });
+};
+
 // Import data from backup file
 export const importData = (jsonData: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
@@ -104,5 +163,81 @@ export const importData = (jsonData: string): Promise<boolean> => {
       });
       reject(error);
     }
+  });
+};
+
+// Import data from Excel file
+export const importFromExcel = (file: File): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = async (e) => {
+      try {
+        if (!e.target?.result) {
+          throw new Error("Failed to read file");
+        }
+        
+        // Parse the Excel file
+        const data = new Uint8Array(e.target.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const store = useStore.getState();
+        
+        // Process each sheet in the workbook
+        workbook.SheetNames.forEach(sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          
+          switch(sheetName.toLowerCase()) {
+            case 'transactions':
+              if (jsonData.length > 0) store.transactions = jsonData as any[];
+              break;
+            case 'employees':
+              if (jsonData.length > 0) store.employees = jsonData as any[];
+              break;
+            case 'materials':
+              if (jsonData.length > 0) store.materials = jsonData as any[];
+              break;
+            case 'sites':
+              if (jsonData.length > 0) store.sites = jsonData as any[];
+              break;
+            case 'site employees':
+              if (jsonData.length > 0) store.siteEmployees = jsonData as any[];
+              break;
+            case 'site materials':
+              if (jsonData.length > 0) store.siteMaterials = jsonData as any[];
+              break;
+            case 'site tasks':
+              if (jsonData.length > 0) store.siteTasks = jsonData as any[];
+              break;
+          }
+        });
+        
+        toast({
+          title: "Excel Import Successful",
+          description: "Your data has been imported from the Excel file"
+        });
+        
+        resolve(true);
+      } catch (error) {
+        console.error("Failed to import from Excel:", error);
+        toast({
+          title: "Import Failed",
+          description: "The Excel file format is invalid or unsupported",
+          variant: "destructive"
+        });
+        reject(error);
+      }
+    };
+    
+    reader.onerror = () => {
+      toast({
+        title: "Import Failed",
+        description: "Could not read the Excel file",
+        variant: "destructive"
+      });
+      reject(new Error("FileReader error"));
+    };
+    
+    reader.readAsArrayBuffer(file);
   });
 };

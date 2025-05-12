@@ -1,12 +1,29 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HardDriveDownload, HardDriveUpload } from 'lucide-react';
+import { FileDown, FileUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
-import { exportData } from '@/lib/backupUtils';
+import { exportData, exportToExcel } from '@/lib/backupUtils';
 import { useState } from 'react';
 import { useActiveTime } from '@/hooks/use-active-time';
 import { SyncIndicator } from './SyncIndicator';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { importData, importFromExcel } from '@/lib/backupUtils';
+import { toast } from '@/hooks/use-toast';
 
 export const SiteDataStats = () => {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -18,6 +35,31 @@ export const SiteDataStats = () => {
   const sites = useStore(state => state.sites);
   const documents = useStore(state => state.documents);
   
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      // Check file extension
+      if (file.name.endsWith('.json')) {
+        const text = await file.text();
+        await importData(text);
+      } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        await importFromExcel(file);
+      } else {
+        toast({
+          title: "Import Failed",
+          description: "Unsupported file format. Please use .json or .xlsx files.",
+          variant: "destructive"
+        });
+      }
+      
+      setImportDialogOpen(false);
+    } catch (error) {
+      console.error("Import error:", error);
+    }
+  };
+  
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
@@ -27,20 +69,33 @@ export const SiteDataStats = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-2">
-          <Button 
-            variant="outline" 
-            className="justify-start"
-            onClick={() => exportData()}
-          >
-            <HardDriveDownload className="mr-2 h-4 w-4" />
-            Export Backup
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="justify-start w-full"
+              >
+                <FileDown className="mr-2 h-4 w-4" />
+                Export Data
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => exportData()}>
+                JSON Backup
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportToExcel()}>
+                Excel Spreadsheet
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
           <Button 
             variant="outline" 
             className="justify-start"
             onClick={() => setImportDialogOpen(true)}
           >
-            <HardDriveUpload className="mr-2 h-4 w-4" />
+            <FileUp className="mr-2 h-4 w-4" />
             Import Data
           </Button>
         </div>
@@ -55,6 +110,35 @@ export const SiteDataStats = () => {
           </div>
         </div>
       </CardContent>
+      
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Import Data</DialogTitle>
+            <DialogDescription>
+              Upload JSON backup or Excel file to restore your data.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <input
+              type="file"
+              accept=".json,.xlsx,.xls"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-500
+                         file:mr-4 file:py-2 file:px-4
+                         file:rounded-md file:border-0
+                         file:text-sm file:font-semibold
+                         file:bg-primary file:text-primary-foreground
+                         hover:file:bg-primary/90"
+            />
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setImportDialogOpen(false)}>Cancel</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
