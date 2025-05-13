@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 import CalculationTool from '@/components/CalculationTool';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileExcel, FilePdf, FileJson, Download } from 'lucide-react';
+import { File, FileText, FileJson, Download } from 'lucide-react';
 import { exportToExcel, exportData } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
 import { useToast } from '@/hooks/use-toast';
@@ -40,7 +40,7 @@ const Calculations = () => {
               onClick={handleExcelExport}
               className="flex items-center gap-2"
             >
-              <FileExcel className="h-4 w-4" />
+              <File className="h-4 w-4" />
               <span className="hidden sm:inline">Export Excel</span>
               <span className="sm:hidden">Excel</span>
             </Button>
@@ -50,7 +50,7 @@ const Calculations = () => {
               onClick={handlePDFExport}
               className="flex items-center gap-2"
             >
-              <FilePdf className="h-4 w-4" />
+              <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Export PDF</span>
               <span className="sm:hidden">PDF</span>
             </Button>
