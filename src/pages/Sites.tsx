@@ -64,11 +64,13 @@ const Sites = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="page-container animate-fade-in">
+      <main className="page-container animate-fade-in px-2">
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
           {/* Sidebar for site selection */}
           {showAddSiteForm ? (
-            <SiteForm onClose={() => setShowAddSiteForm(false)} />
+            <div className="w-full lg:w-1/3">
+              <SiteForm onClose={() => setShowAddSiteForm(false)} />
+            </div>
           ) : (
             <SiteList
               sites={sites}
@@ -81,7 +83,7 @@ const Sites = () => {
           )}
           
           {/* Main content area */}
-          <div className="flex-1">
+          <div className="flex-1 max-w-full overflow-hidden">
             <AnimatePresence mode="wait">
               {selectedSite ? (
                 <motion.div
@@ -104,14 +106,16 @@ const Sites = () => {
                     siteId={selectedSite.id}
                   />
                   
-                  <Tabs value={activeTab} onValueChange={setActiveTab}>
-                    <TabsList className="w-full justify-start">
-                      <TabsTrigger value="overview">Overview</TabsTrigger>
-                      <TabsTrigger value="employees">Employees</TabsTrigger>
-                      <TabsTrigger value="materials">Materials</TabsTrigger>
-                      <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                      <TabsTrigger value="attachments">Attachments</TabsTrigger>
-                    </TabsList>
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <div className="overflow-x-auto scrollable-tabs">
+                      <TabsList className="w-full justify-start">
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="employees">Employees</TabsTrigger>
+                        <TabsTrigger value="materials">Materials</TabsTrigger>
+                        <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                        <TabsTrigger value="attachments">Attachments</TabsTrigger>
+                      </TabsList>
+                    </div>
                     
                     <TabsContent value="overview">
                       <SiteOverview

@@ -1,12 +1,15 @@
+
 import { useState } from 'react';
 import { Site, SiteStatus } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Plus, Search } from 'lucide-react';
+import { MapPin, Plus, Search, Filter } from 'lucide-react';
 import { format, parseISO, differenceInDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+
 interface SiteListProps {
   sites: Site[];
   selectedSiteId: string | null;
@@ -15,6 +18,7 @@ interface SiteListProps {
   getSiteTasksCount: (siteId: string) => number;
   getStatusIcon: (status: SiteStatus, size?: number) => React.ReactNode;
 }
+
 const SiteList = ({
   sites,
   selectedSiteId,
@@ -25,11 +29,13 @@ const SiteList = ({
 }: SiteListProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  
   const filteredSites = sites.filter(site => {
     const matchesSearch = site.name.toLowerCase().includes(searchQuery.toLowerCase()) || site.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || site.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+  
   const getSiteDuration = (site: {
     startDate: string;
   }) => {
@@ -37,21 +43,23 @@ const SiteList = ({
     const today = new Date();
     return differenceInDays(today, startDate);
   };
-  return <div className="w-full lg:w-1/4 space-y-4">
+  
+  const SiteListContent = () => (
+    <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Site Tracker  🏗️</h1>
+        <h1 className="text-2xl font-bold">Site Tracker  🏗️</h1>
         <Button onClick={onAddSiteClick}>
           <Plus className="h-4 w-4 mr-2" /> New Site
         </Button>
       </div>
       
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search sites..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-8" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-full sm:w-[140px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -103,6 +111,47 @@ const SiteList = ({
             </div>}
         </CardContent>
       </Card>
-    </div>;
+    </div>
+  );
+  
+  // On mobile, show sites in a sheet that can be toggled
+  return (
+    <>
+      {/* Desktop view */}
+      <div className="hidden lg:block w-full lg:w-1/4">
+        <SiteListContent />
+      </div>
+      
+      {/* Mobile view */}
+      <div className="lg:hidden w-full mb-4">
+        <Sheet>
+          <div className="flex items-center justify-between bg-card rounded-lg p-3 mb-2">
+            <h2 className="text-lg font-medium">
+              {selectedSiteId ? 
+                sites.find(site => site.id === selectedSiteId)?.name || 'Select Site' 
+                : 'Select Site'}
+            </h2>
+            <div className="flex items-center gap-2">
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Sites
+                </Button>
+              </SheetTrigger>
+              <Button size="sm" onClick={onAddSiteClick}>
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <SheetContent side="left" className="w-full sm:max-w-lg p-0">
+            <div className="p-4">
+              <SiteListContent />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
+  );
 };
+
 export default SiteList;

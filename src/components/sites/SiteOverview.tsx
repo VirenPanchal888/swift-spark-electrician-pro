@@ -22,13 +22,13 @@ const SiteOverview = ({
   const siteTasksFiltered = siteTasks.filter(task => task.siteId === siteId);
   
   return (
-    <div className="space-y-4 mt-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-4 mt-4 pb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Employee Overview</CardTitle>
+          <CardHeader className="p-3 sm:p-4">
+            <CardTitle className="text-base sm:text-lg">Employee Overview</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-4 pt-0">
             {getSiteEmployeesCount(siteId) === 0 ? (
               <div className="text-center py-4">
                 <p className="text-muted-foreground mb-2">No employees assigned</p>
@@ -57,10 +57,10 @@ const SiteOverview = ({
         </Card>
         
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Materials Overview</CardTitle>
+          <CardHeader className="p-3 sm:p-4">
+            <CardTitle className="text-base sm:text-lg">Materials Overview</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-4 pt-0">
             {getSiteMaterialsCount(siteId) === 0 ? (
               <div className="text-center py-4">
                 <p className="text-muted-foreground mb-2">No materials added</p>
@@ -90,10 +90,10 @@ const SiteOverview = ({
       </div>
       
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Recent Tasks</CardTitle>
+        <CardHeader className="p-3 sm:p-4">
+          <CardTitle className="text-base sm:text-lg">Recent Tasks</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-4 pt-0">
           {siteTasksFiltered.length === 0 ? (
             <div className="text-center py-4">
               <p className="text-muted-foreground mb-2">No tasks created</p>
@@ -112,13 +112,13 @@ const SiteOverview = ({
                   .slice(0, 3)
                   .map(task => (
                     <div key={task.id} className="flex items-start gap-2 p-2 bg-muted/50 rounded-md">
-                      <div className="mt-0.5">
+                      <div className="mt-0.5 flex-shrink-0">
                         {task.status === 'completed' && <CircleCheck className="h-4 w-4 text-green-500" />}
                         {task.status === 'in-progress' && <Clock className="h-4 w-4 text-blue-500" />}
                         {task.status === 'pending' && <CircleAlert className="h-4 w-4 text-yellow-500" />}
                       </div>
-                      <div className="flex-1">
-                        <div className="font-medium">{task.title}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{task.title}</div>
                         {task.description && (
                           <div className="text-sm text-muted-foreground line-clamp-1">
                             {task.description}
