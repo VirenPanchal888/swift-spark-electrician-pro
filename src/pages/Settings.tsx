@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -12,18 +11,15 @@ import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
 import { useToast } from '@/hooks/use-toast';
 import { SiteDataStats } from '@/components/sync/SiteDataStats';
-
 const Settings = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>(
-    document.documentElement.getAttribute('data-theme') as 'light' | 'dark' || 'light'
-  );
+  const [theme, setTheme] = useState<'light' | 'dark'>(document.documentElement.getAttribute('data-theme') as 'light' | 'dark' || 'light');
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [resetPin, setResetPin] = useState('');
   const [isResetting, setIsResetting] = useState(false);
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
   const store = useStore();
-  
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
@@ -34,7 +30,6 @@ const Settings = () => {
       description: `The application is now using the ${newTheme} theme.`
     });
   };
-  
   const handleResetApplication = async () => {
     if (resetPin !== 'Reset@888') {
       toast({
@@ -44,48 +39,42 @@ const Settings = () => {
       });
       return;
     }
-    
     setIsResetting(true);
-    
     try {
       // Export all data before resetting
       toast({
         title: "Exporting Data Backups",
         description: "Creating backups before reset..."
       });
-      
+
       // Export to all formats
       await exportData();
       await exportToExcel();
       await exportToPDF();
       await exportToCSV();
-      
       toast({
         title: "Backups Created",
         description: "Your data has been backed up before reset"
       });
-      
+
       // Clear all data in the store
-      const stateKeys = [
-        'transactions', 'employees', 'materials', 'documents', 'sites',
-        'siteEmployees', 'siteMaterials', 'siteTasks', 'siteDocuments', 'salaryRecords'
-      ];
-      
+      const stateKeys = ['transactions', 'employees', 'materials', 'documents', 'sites', 'siteEmployees', 'siteMaterials', 'siteTasks', 'siteDocuments', 'salaryRecords'];
+
       // Reset each state to empty array
       stateKeys.forEach(key => {
-        useStore.setState(state => ({ [key]: [] }));
+        useStore.setState(state => ({
+          [key]: []
+        }));
       });
-      
+
       // Clear local storage except for theme preference
       const theme = localStorage.getItem('theme');
       localStorage.clear();
       if (theme) localStorage.setItem('theme', theme);
-      
       toast({
         title: "Application Reset Complete",
         description: "Your application has been reset to its initial state."
       });
-      
       setResetDialogOpen(false);
       setResetPin('');
     } catch (error) {
@@ -99,9 +88,7 @@ const Settings = () => {
       setIsResetting(false);
     }
   };
-  
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="flex-1 container py-8">
         <h1 className="text-3xl font-bold mb-6">Settings</h1>
@@ -119,10 +106,7 @@ const Settings = () => {
                   {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                   <span>{theme === 'light' ? 'Light' : 'Dark'} Mode</span>
                 </div>
-                <Switch 
-                  checked={theme === 'dark'}
-                  onCheckedChange={toggleTheme}
-                />
+                <Switch checked={theme === 'dark'} onCheckedChange={toggleTheme} />
               </div>
             </CardContent>
           </Card>
@@ -137,11 +121,7 @@ const Settings = () => {
               <SiteDataStats />
               
               <div className="pt-4 border-t">
-                <Button 
-                  variant="destructive" 
-                  className="w-full"
-                  onClick={() => setResetDialogOpen(true)}
-                >
+                <Button variant="destructive" className="w-full" onClick={() => setResetDialogOpen(true)}>
                   <AlertTriangle className="mr-2 h-4 w-4" />
                   Reset Application Data
                 </Button>
@@ -160,20 +140,13 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none">
               <div className="space-y-4">
-                <p>
-                  This construction management application was developed to streamline the process of managing construction projects, 
-                  resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, 
-                  transactions, and site progress all in one place.
-                </p>
-                <p>
-                  The application enables construction managers to efficiently allocate resources, monitor expenses, 
-                  generate reports, and maintain clear communication across all project stakeholders.
-                </p>
+                <p>This Electrician management application was developed to streamline the process of managing electrician projects, resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, transactions, and site progress all in one place.</p>
+                <p>The application enables Electrician managers to efficiently allocate resources, monitor expenses, generate reports, and maintain clear communication across all project stakeholders.</p>
                 <p>
                   Key features include:
                 </p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>Site management and task tracking</li>
+                  <li className="">Site management and task tracking</li>
                   <li>Employee allocation and salary management</li>
                   <li>Materials inventory and usage tracking</li>
                   <li>Document storage and organization</li>
@@ -203,12 +176,7 @@ const Settings = () => {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <p className="text-sm font-medium">Enter security PIN to confirm reset:</p>
-                <Input
-                  type="password"
-                  placeholder="Enter PIN"
-                  value={resetPin}
-                  onChange={(e) => setResetPin(e.target.value)}
-                />
+                <Input type="password" placeholder="Enter PIN" value={resetPin} onChange={e => setResetPin(e.target.value)} />
                 <p className="text-xs text-muted-foreground">PIN Format: Reset@888</p>
               </div>
             </div>
@@ -217,19 +185,13 @@ const Settings = () => {
               <Button variant="outline" onClick={() => setResetDialogOpen(false)} disabled={isResetting}>
                 Cancel
               </Button>
-              <Button 
-                variant="destructive" 
-                onClick={handleResetApplication}
-                disabled={isResetting || !resetPin}
-              >
+              <Button variant="destructive" onClick={handleResetApplication} disabled={isResetting || !resetPin}>
                 {isResetting ? "Exporting & Resetting..." : "Reset Application"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Settings;
