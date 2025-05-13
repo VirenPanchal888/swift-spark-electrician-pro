@@ -28,7 +28,7 @@ import {
   Timer,
   File
 } from 'lucide-react';
-import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
+import { exportData, exportToExcel, exportToCSV, importData } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
 import { SyncIndicator } from './SyncIndicator';
 import { useActiveTime } from '@/hooks/use-active-time';
