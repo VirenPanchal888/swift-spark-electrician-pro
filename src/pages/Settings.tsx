@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Sun, Moon, AlertTriangle } from 'lucide-react';
+import { Sun, Moon, AlertTriangle, Info } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
@@ -145,6 +145,46 @@ const Settings = () => {
                   <AlertTriangle className="mr-2 h-4 w-4" />
                   Reset Application Data
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* About the Application */}
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Info className="mr-2 h-5 w-5" />
+                About This Application
+              </CardTitle>
+              <CardDescription>Information about the application and its purpose</CardDescription>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none">
+              <div className="space-y-4">
+                <p>
+                  This construction management application was developed to streamline the process of managing construction projects, 
+                  resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, 
+                  transactions, and site progress all in one place.
+                </p>
+                <p>
+                  The application enables construction managers to efficiently allocate resources, monitor expenses, 
+                  generate reports, and maintain clear communication across all project stakeholders.
+                </p>
+                <p>
+                  Key features include:
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Site management and task tracking</li>
+                  <li>Employee allocation and salary management</li>
+                  <li>Materials inventory and usage tracking</li>
+                  <li>Document storage and organization</li>
+                  <li>Financial transaction recording</li>
+                  <li>Data backup and export capabilities</li>
+                </ul>
+                <div className="pt-4 border-t mt-4">
+                  <p className="text-sm text-muted-foreground text-right italic">
+                    Designed and Developed by Viren Panchal
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
