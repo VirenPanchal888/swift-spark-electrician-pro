@@ -13,6 +13,7 @@ import Materials from "./pages/Materials";
 import Docs from "./pages/Docs";
 import Sites from "./pages/Sites";
 import SalaryRecords from "./pages/SalaryRecords";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import SplashScreen from "./components/SplashScreen";
 import "./App.css";
@@ -68,6 +69,7 @@ const App = () => {
             <Route path="/docs" element={<Docs />} />
             <Route path="/sites" element={<Sites />} />
             <Route path="/salary" element={<SalaryRecords />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

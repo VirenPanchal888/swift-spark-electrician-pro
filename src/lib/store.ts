@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Transaction, Employee, MaterialUsage, Material, Document, Site, SiteEmployee, SiteMaterial, SiteTask, SiteDocument, TaskStatus, SalaryRecord } from './types';
@@ -76,6 +77,9 @@ interface StoreState {
   getSiteMaterials: (siteId: string) => SiteMaterial[];
   getSiteTasks: (siteId: string) => SiteTask[];
   getSiteDocuments: (siteId: string) => SiteDocument[];
+
+  // Reset data
+  resetAllData: () => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -446,6 +450,22 @@ export const useStore = create<StoreState>()(
       
       getSiteDocuments: (siteId) => {
         return get().siteDocuments.filter((sd) => sd.siteId === siteId);
+      },
+      
+      // Reset all data
+      resetAllData: () => {
+        set({
+          transactions: [],
+          employees: [],
+          materials: [],
+          documents: [],
+          sites: [],
+          siteEmployees: [],
+          siteMaterials: [],
+          siteTasks: [],
+          siteDocuments: [],
+          salaryRecords: [],
+        });
       },
     }),
     {

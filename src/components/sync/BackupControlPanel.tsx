@@ -1,39 +1,10 @@
 
 import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { 
-  FileText, 
-  Download, 
-  ServerCog, 
-  Timer,
-  File
-} from 'lucide-react';
-import { exportData, exportToExcel, exportToCSV, importData } from '@/lib/backupUtils';
-import { exportToPDF } from '@/lib/exportUtils';
-import { SyncIndicator } from './SyncIndicator';
-import { useActiveTime } from '@/hooks/use-active-time';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { toast } from '@/hooks/use-toast';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -41,208 +12,134 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
+import {
+  Download,
+  Upload,
+  CloudUpload,
+  Save,
+  Timer,
+  File
+} from 'lucide-react';
+import { exportData, exportToExcel, exportToCSV, importData } from '@/lib/backupUtils';
+import { exportToPDF } from '@/lib/exportUtils';
+import { SyncIndicator } from './SyncIndicator';
+import { useActiveTime } from '@/hooks/use-active-time';
 
 export const BackupControlPanel = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [fileContent, setFileContent] = useState<string>('');
-  const [fileName, setFileName] = useState<string>('');
-  const { formatActiveTime } = useActiveTime();
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const { lastUpdated, formatActiveTime } = useActiveTime();
 
-  const handleImportClick = () => {
-    setIsImportDialogOpen(true);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     
-    if (file) {
-      setFileName(file.name);
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setFileContent(e.target.result as string);
-          setIsImportDialogOpen(false);
-          setIsConfirmDialogOpen(true);
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-  
-  const handleConfirmImport = async () => {
     try {
-      await importData(fileContent);
-      setIsConfirmDialogOpen(false);
+      // Check file extension
+      if (file.name.endsWith('.json')) {
+        const text = await file.text();
+        await importData(text);
+        setImportDialogOpen(false);
+      } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        toast({
+          title: "Excel Import",
+          description: "Excel import functionality is in progress."
+        });
+      } else {
+        toast({
+          title: "Import Failed",
+          description: "Unsupported file format. Please use .json files.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("Import error:", error);
       toast({
-        title: "Import Successful",
-        description: "Your data has been restored from backup"
+        title: "Import Failed",
+        description: "Failed to import data. The file might be corrupted.",
+        variant: "destructive"
       });
-    } catch (err) {
-      console.error("Import failed:", err);
     }
   };
 
   return (
-    <>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="flex gap-2 items-center">
-            <ServerCog className="h-4 w-4" />
-            <span className="hidden md:inline">🔁 Backup & Sync</span>
-            <span className="inline md:hidden">🔁</span>
+    <Card className="w-full">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-md flex items-center gap-2">
+          <CloudUpload className="h-4 w-4" />
+          Backup &amp; Sync
+        </CardTitle>
+        <CardDescription>
+          {lastUpdated 
+            ? `Last updated ${formatActiveTime(lastUpdated)}`
+            : 'No recent changes'
+          }
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="justify-start w-full">
+                <Download className="mr-2 h-4 w-4" />
+                Export Data
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => exportData()}>
+                <Save className="mr-2 h-4 w-4" />
+                Full Backup (JSON)
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => exportToExcel()}>
+                <File className="mr-2 h-4 w-4" />
+                Excel Spreadsheet
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportToPDF()}>
+                <File className="mr-2 h-4 w-4" />
+                PDF Report w/Screenshots
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportToCSV()}>
+                <File className="mr-2 h-4 w-4" />
+                CSV Archive (Zip)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <Button 
+            variant="outline" 
+            className="justify-start"
+            onClick={() => setImportDialogOpen(true)}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Import Data
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Data Control Panel</h4>
-              <p className="text-sm text-muted-foreground">
-                Manage your data backup and sync settings
-              </p>
-            </div>
-            <div className="grid gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    className="justify-start w-full"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Export Full Backup
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Export Options</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => exportData()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Complete JSON Backup
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportToExcel()}>
-                    <File className="mr-2 h-4 w-4" />
-                    Excel Spreadsheet
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportToPDF()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    PDF Report with Screenshots
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportToCSV()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    CSV Archive (Zip)
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button 
-                variant="outline" 
-                className="justify-start"
-                onClick={handleImportClick}
-              >
-                <Download className="mr-2 h-4 w-4 rotate-180" />
-                Import Backup File
-              </Button>
-              <div className="mt-2">
-                <SyncIndicator />
-              </div>
-            </div>
+        </div>
+        
+        <div className="flex items-center justify-between mt-4">
+          <SyncIndicator />
+          <div className="text-xs text-muted-foreground">
+            <Timer className="inline-block mr-1 h-3 w-3" />
+            Active for {formatActiveTime()}
           </div>
-        </PopoverContent>
-      </Popover>
+        </div>
+      </CardContent>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Data Control Panel</DialogTitle>
+            <DialogTitle>Import Data</DialogTitle>
             <DialogDescription>
-              Export, import, and manage your data
-            </DialogDescription>
-          </DialogHeader>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-md">Backup Options</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Export Full Backup
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>Export Options</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => exportData()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    Complete JSON Backup
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => exportToExcel()}>
-                    <File className="mr-2 h-4 w-4" />
-                    Excel Spreadsheet
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportToPDF()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    PDF Report with Screenshots
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => exportToCSV()}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    CSV Archive (Zip)
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={handleImportClick}
-              >
-                <Download className="mr-2 h-4 w-4 rotate-180" />
-                Import Backup File
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <div className="flex flex-col gap-2 mt-2">
-            <Alert>
-              <Timer className="h-4 w-4" />
-              <AlertTitle>Session Information</AlertTitle>
-              <AlertDescription>
-                Active Time: {formatActiveTime()}
-                <br />
-                Auto-save is enabled
-              </AlertDescription>
-            </Alert>
-            <SyncIndicator />
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsOpen(false)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* File Input Dialog */}
-      <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Import Backup File</DialogTitle>
-            <DialogDescription>
-              Please select a backup file to restore your data
+              Upload a JSON backup file to restore your data.
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid gap-4 py-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Select Backup File (JSON)
-            </label>
             <input
               type="file"
-              accept=".json"
+              accept=".json,.xlsx,.xls"
               onChange={handleFileChange}
               className="block w-full text-sm text-gray-500
                          file:mr-4 file:py-2 file:px-4
@@ -254,32 +151,10 @@ export const BackupControlPanel = () => {
           </div>
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsImportDialogOpen(false)}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setImportDialogOpen(false)}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
-      {/* Confirm Import Dialog */}
-      <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will replace your current data with the contents of {fileName}. 
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmImport}>
-              Yes, Import Data
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+    </Card>
   );
 };
-
