@@ -1,9 +1,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileDown, FileUp } from 'lucide-react';
+import { Download, File, FileText } from 'lucide-react';
 import { useStore } from '@/lib/store';
-import { exportData, exportToExcel } from '@/lib/backupUtils';
+import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
+import { exportToPDF } from '@/lib/exportUtils';
 import { useState } from 'react';
 import { useActiveTime } from '@/hooks/use-active-time';
 import { SyncIndicator } from './SyncIndicator';
@@ -13,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -75,17 +77,28 @@ export const SiteDataStats = () => {
                 variant="outline" 
                 className="justify-start w-full"
               >
-                <FileDown className="mr-2 h-4 w-4" />
+                <Download className="mr-2 h-4 w-4" />
                 Export Data
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>Export Options</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => exportData()}>
-                JSON Backup
+                <FileText className="mr-2 h-4 w-4" />
+                Complete JSON Backup
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => exportToExcel()}>
+                <File className="mr-2 h-4 w-4" />
                 Excel Spreadsheet
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportToPDF()}>
+                <FileText className="mr-2 h-4 w-4" />
+                PDF Report with Screenshots
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportToCSV()}>
+                <FileText className="mr-2 h-4 w-4" />
+                CSV Archive (Zip)
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -95,7 +108,7 @@ export const SiteDataStats = () => {
             className="justify-start"
             onClick={() => setImportDialogOpen(true)}
           >
-            <FileUp className="mr-2 h-4 w-4" />
+            <Download className="mr-2 h-4 w-4 rotate-180" />
             Import Data
           </Button>
         </div>
@@ -142,3 +155,4 @@ export const SiteDataStats = () => {
     </Card>
   );
 };
+

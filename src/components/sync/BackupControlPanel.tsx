@@ -21,12 +21,27 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { HardDriveDownload, HardDriveUpload, ServerCog, Timer } from 'lucide-react';
-import { exportData, importData } from '@/lib/backupUtils';
+import { 
+  FileText, 
+  Download, 
+  ServerCog, 
+  Timer,
+  File
+} from 'lucide-react';
+import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
+import { exportToPDF } from '@/lib/exportUtils';
 import { SyncIndicator } from './SyncIndicator';
 import { useActiveTime } from '@/hooks/use-active-time';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from '@/hooks/use-toast';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 export const BackupControlPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,20 +105,42 @@ export const BackupControlPanel = () => {
               </p>
             </div>
             <div className="grid gap-2">
-              <Button 
-                variant="outline" 
-                className="justify-start"
-                onClick={() => exportData()}
-              >
-                <HardDriveDownload className="mr-2 h-4 w-4" />
-                Export Full Backup
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="justify-start w-full"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Full Backup
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => exportData()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Complete JSON Backup
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportToExcel()}>
+                    <File className="mr-2 h-4 w-4" />
+                    Excel Spreadsheet
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportToPDF()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    PDF Report with Screenshots
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportToCSV()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    CSV Archive (Zip)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button 
                 variant="outline" 
                 className="justify-start"
                 onClick={handleImportClick}
               >
-                <HardDriveUpload className="mr-2 h-4 w-4" />
+                <Download className="mr-2 h-4 w-4 rotate-180" />
                 Import Backup File
               </Button>
               <div className="mt-2">
@@ -128,20 +165,43 @@ export const BackupControlPanel = () => {
               <CardTitle className="text-md">Backup Options</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => exportData()}
-              >
-                <HardDriveDownload className="mr-2 h-4 w-4" />
-                Export Full Backup
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Full Backup
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => exportData()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Complete JSON Backup
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => exportToExcel()}>
+                    <File className="mr-2 h-4 w-4" />
+                    Excel Spreadsheet
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportToPDF()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    PDF Report with Screenshots
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => exportToCSV()}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    CSV Archive (Zip)
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
                 onClick={handleImportClick}
               >
-                <HardDriveUpload className="mr-2 h-4 w-4" />
+                <Download className="mr-2 h-4 w-4 rotate-180" />
                 Import Backup File
               </Button>
             </CardContent>
@@ -222,3 +282,4 @@ export const BackupControlPanel = () => {
     </>
   );
 };
+

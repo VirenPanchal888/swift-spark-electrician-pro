@@ -1,7 +1,7 @@
-
 import { useStore } from './store';
 import { toast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
 
 // Type for backup format
 export interface BackupData {
@@ -16,15 +16,44 @@ export interface BackupData {
   siteTasks: any[];
   siteDocuments: any[];
   documents: any[];
+  salaryRecords: any[];
   app_settings: {
     dark_mode: boolean;
     language: string;
+    export_version: string;
   };
 }
 
 // Export all data to JSON file
-export const exportData = () => {
+export const exportData = async () => {
   const store = useStore.getState();
+  
+  // Show toast notification about the export starting
+  toast({
+    title: "Starting Backup Export",
+    description: "Preparing comprehensive data export..."
+  });
+  
+  // Capture dashboard screenshots if in browser environment
+  let dashboardImages = {};
+  if (typeof document !== 'undefined') {
+    try {
+      // Get all dashboard elements to capture
+      const dashboardElements = document.querySelectorAll('.card, [data-export-capture="true"]');
+      
+      // Capture each element as an image
+      for (let i = 0; i < dashboardElements.length; i++) {
+        const element = dashboardElements[i];
+        if (element instanceof HTMLElement) {
+          const canvas = await html2canvas(element);
+          const imageData = canvas.toDataURL('image/png');
+          dashboardImages[`dashboard_${i}`] = imageData;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to capture dashboard screenshots:", error);
+    }
+  }
   
   const backupData: BackupData = {
     user_id: `user_${Math.floor(Math.random() * 10000)}`,
@@ -38,11 +67,18 @@ export const exportData = () => {
     siteTasks: store.siteTasks,
     siteDocuments: store.siteDocuments,
     documents: store.documents,
+    salaryRecords: store.salaryRecords || [],
     app_settings: {
       dark_mode: document.documentElement.getAttribute('data-theme') === 'dark',
-      language: 'en-IN'
+      language: 'en-IN',
+      export_version: '1.1.0'
     }
   };
+  
+  // Add screenshot data if available
+  if (Object.keys(dashboardImages).length > 0) {
+    backupData['dashboardScreenshots'] = dashboardImages;
+  }
   
   const jsonString = JSON.stringify(backupData, null, 2);
   const blob = new Blob([jsonString], { type: 'application/json' });
@@ -51,19 +87,99 @@ export const exportData = () => {
   // Create a download link and trigger it
   const downloadLink = document.createElement('a');
   downloadLink.href = url;
-  downloadLink.download = `powerhouse_backup_${new Date().toISOString().split('T')[0]}.json`;
+  downloadLink.download = `powerhouse_full_backup_${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);
   
   toast({
     title: "Backup Exported Successfully",
-    description: "Your data has been exported to a JSON file"
+    description: "Your complete data has been exported to a JSON file"
   });
   
   // Clean up the URL
   URL.revokeObjectURL(url);
 };
+
+// Export data to CSV file
+export const exportToCSV = async () => {
+  const store = useStore.getState();
+  
+  // Show toast notification
+  toast({
+    title: "Starting CSV Export",
+    description: "Preparing your data export..."
+  });
+  
+  // Create a CSV string for each data type
+  const exportData = {
+    transactions: convertToCSV(store.transactions),
+    employees: convertToCSV(store.employees),
+    materials: convertToCSV(store.materials),
+    sites: convertToCSV(store.sites),
+    siteEmployees: convertToCSV(store.siteEmployees),
+    siteMaterials: convertToCSV(store.siteMaterials),
+    siteTasks: convertToCSV(store.siteTasks),
+    siteDocuments: convertToCSV(store.siteDocuments),
+    documents: convertToCSV(store.documents),
+    salaryRecords: convertToCSV(store.salaryRecords || [])
+  };
+  
+  // Create a zip file with all CSV files
+  const zip = await import('jszip').then(module => new module.default());
+  
+  // Add each data type to the zip
+  Object.entries(exportData).forEach(([key, value]) => {
+    if (value && value.length > 0) {
+      zip.file(`${key}.csv`, value);
+    }
+  });
+  
+  // Generate the zip file
+  const content = await zip.generateAsync({ type: 'blob' });
+  
+  // Create a download link
+  const url = URL.createObjectURL(content);
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = `powerhouse_data_export_${new Date().toISOString().split('T')[0]}.zip`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  
+  toast({
+    title: "CSV Export Successful",
+    description: "Your data has been exported to CSV files in a zip archive"
+  });
+  
+  // Clean up the URL
+  URL.revokeObjectURL(url);
+};
+
+// Helper function to convert JSON to CSV
+function convertToCSV(data) {
+  if (!data || data.length === 0) return '';
+  
+  const headers = Object.keys(data[0]);
+  const csvRows = [];
+  
+  // Add headers
+  csvRows.push(headers.join(','));
+  
+  // Add rows
+  for (const row of data) {
+    const values = headers.map(header => {
+      const value = row[header];
+      // Handle different data types
+      if (value === null || value === undefined) return '';
+      if (typeof value === 'object') return JSON.stringify(value).replace(/"/g, '""');
+      return `"${String(value).replace(/"/g, '""')}"`;
+    });
+    csvRows.push(values.join(','));
+  }
+  
+  return csvRows.join('\n');
+}
 
 // Export data to Excel file
 export const exportToExcel = () => {
@@ -114,6 +230,12 @@ export const exportToExcel = () => {
     XLSX.utils.book_append_sheet(wb, siteTasksWS, "Site Tasks");
   }
   
+  // Add salary records sheet
+  if (store.salaryRecords && store.salaryRecords.length > 0) {
+    const salaryRecordsWS = XLSX.utils.json_to_sheet(store.salaryRecords);
+    XLSX.utils.book_append_sheet(wb, salaryRecordsWS, "Salary Records");
+  }
+  
   // Write workbook and trigger download
   XLSX.writeFile(wb, `powerhouse_export_${new Date().toISOString().split('T')[0]}.xlsx`);
   
@@ -140,6 +262,7 @@ export const importData = (jsonData: string): Promise<boolean> => {
       if (backupData.siteTasks) store.siteTasks = backupData.siteTasks;
       if (backupData.siteDocuments) store.siteDocuments = backupData.siteDocuments;
       if (backupData.documents) store.documents = backupData.documents;
+      if (backupData.salaryRecords) store.salaryRecords = backupData.salaryRecords;
       
       // Update theme if available
       if (backupData.app_settings?.dark_mode !== undefined) {
@@ -208,6 +331,9 @@ export const importFromExcel = (file: File): Promise<boolean> => {
               break;
             case 'site tasks':
               if (jsonData.length > 0) store.siteTasks = jsonData as any[];
+              break;
+            case 'salary records':
+              if (jsonData.length > 0) store.salaryRecords = jsonData as any[];
               break;
           }
         });
