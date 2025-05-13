@@ -140,7 +140,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none">
               <div className="space-y-4">
-                <p>This Electrician management application was developed to streamline the process of managing electrician projects, resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, transactions, and site progress all in one place.</p>
+                <p>This Powerhouse Electrician management application was developed to streamline the process of managing electrician projects, resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, transactions, and site progress all in one place.</p>
                 <p>The application enables Electrician managers to efficiently allocate resources, monitor expenses, generate reports, and maintain clear communication across all project stakeholders.</p>
                 <p>
                   Key features include:
