@@ -63,10 +63,14 @@ export function useActiveTime() {
   }, [isActive]);
   
   // Format active time into human-readable string
-  const formatActiveTime = () => {
-    const hours = Math.floor(activeTime / 3600);
-    const minutes = Math.floor((activeTime % 3600) / 60);
-    const seconds = activeTime % 60;
+  const formatActiveTime = (timestamp?: number) => {
+    const timeToFormat = timestamp 
+      ? Math.floor((new Date().getTime() - timestamp) / 1000)
+      : activeTime;
+      
+    const hours = Math.floor(timeToFormat / 3600);
+    const minutes = Math.floor((timeToFormat % 3600) / 60);
+    const seconds = timeToFormat % 60;
     
     if (hours > 0) {
       return `${hours}h ${minutes}m`;

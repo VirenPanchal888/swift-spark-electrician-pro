@@ -29,7 +29,7 @@ import { useActiveTime } from '@/hooks/use-active-time';
 export const BackupControlPanel = () => {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const { toast } = useToast();
-  const { lastUpdated, formatActiveTime } = useActiveTime();
+  const { lastActive, formatActiveTime } = useActiveTime();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,8 +71,8 @@ export const BackupControlPanel = () => {
           Backup &amp; Sync
         </CardTitle>
         <CardDescription>
-          {lastUpdated 
-            ? `Last updated ${formatActiveTime(lastUpdated)}`
+          {lastActive 
+            ? `Last updated ${formatActiveTime(lastActive.getTime())}`
             : 'No recent changes'
           }
         </CardDescription>
