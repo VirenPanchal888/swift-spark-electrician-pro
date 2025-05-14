@@ -142,19 +142,10 @@ const Settings = () => {
               <div className="space-y-4">
                 <p>This Powerhouse Electrician management application was developed to streamline the process of managing electrician projects, resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, transactions, and site progress all in one place.</p>
                 <p>The application enables Electrician managers to efficiently allocate resources, monitor expenses, generate reports, and maintain clear communication across all project stakeholders.</p>
-                <p>
-                  Key features include:
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li className="">Site management and task tracking</li>
-                  <li>Employee allocation and salary management</li>
-                  <li>Materials inventory and usage tracking</li>
-                  <li>Document storage and organization</li>
-                  <li>Financial transaction recording</li>
-                  <li>Data backup and export capabilities</li>
-                </ul>
+                
+                
                 <div className="pt-4 border-t mt-4">
-                  <p className="text-sm text-muted-foreground text-right italic">
+                  <p className="text-sm text-muted-foreground ">
                     Designed and Developed by Viren Panchal
                   </p>
                 </div>
