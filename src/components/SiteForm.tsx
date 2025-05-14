@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
@@ -79,14 +80,22 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
     if (manualWorkers.length > 0) {
       manualWorkers.forEach(worker => {
         // First add the employee to the system
-        const newEmployee = addEmployee({
+        const employeeData = {
           name: worker.name,
           siteLocation: newSiteId,
           startDate: startDate.toISOString()
-        }) as Employee | undefined;
+        };
         
-        // Then assign them to the site if we have a valid employee with ID
-        if (newEmployee && typeof newEmployee === 'object' && 'id' in newEmployee) {
+        // Call addEmployee and then get the newly added employee from the store
+        addEmployee(employeeData);
+        
+        // Find the employee by name in the updated store
+        const newEmployee = useStore.getState().employees.find(
+          emp => emp.name === worker.name && emp.siteLocation === newSiteId
+        );
+        
+        // Then assign them to the site if we found the employee
+        if (newEmployee) {
           addSiteEmployee({
             siteId: newSiteId,
             employeeId: newEmployee.id,
