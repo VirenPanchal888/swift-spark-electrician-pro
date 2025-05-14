@@ -124,9 +124,9 @@ export const exportToPDF = async () => {
     yPosition += 6;
     doc.text(`Quantity: ${transaction.quantity}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Site: ${transaction.siteName || "N/A"}`, 25, yPosition);
+    doc.text(`Site: ${transaction.site || "N/A"}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Type: ${transaction.type}`, 25, yPosition);
+    // Skip transaction type since it doesn't exist in the Transaction type
     yPosition += 12;
   });
   
@@ -146,11 +146,13 @@ export const exportToPDF = async () => {
     yPosition += 8;
     
     doc.setFontSize(10);
-    doc.text(`Role: ${employee.role}`, 25, yPosition);
+    doc.text(`Site Location: ${employee.siteLocation || "N/A"}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Phone: ${employee.phone || "N/A"}`, 25, yPosition);
+    doc.text(`Start Date: ${employee.startDate || "N/A"}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Daily Rate: ${formatRupees(employee.dailyRate || 0)}`, 25, yPosition);
+    doc.text(`End Date: ${employee.endDate || "N/A"}`, 25, yPosition);
+    yPosition += 6;
+    doc.text(`Notes: ${employee.notes || "N/A"}`, 25, yPosition);
     yPosition += 12;
     
     // Get salary records for this employee
@@ -163,7 +165,7 @@ export const exportToPDF = async () => {
       yPosition += 8;
       
       empSalaryRecords.slice(0, 3).forEach((record) => {
-        doc.text(`- ${record.date}: ${formatRupees(record.amount)}`, 30, yPosition);
+        doc.text(`- ${record.date}: ${formatRupees(record.salaryPaid)}`, 30, yPosition);
         yPosition += 6;
       });
       
@@ -192,15 +194,14 @@ export const exportToPDF = async () => {
     yPosition += 8;
     
     doc.setFontSize(10);
-    doc.text(`Client: ${site.clientName}`, 25, yPosition);
-    yPosition += 6;
+    // Remove clientName as it doesn't exist in the Site type
     doc.text(`Location: ${site.location}`, 25, yPosition);
     yPosition += 6;
     doc.text(`Status: ${site.status}`, 25, yPosition);
     yPosition += 6;
     doc.text(`Start Date: ${site.startDate}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Expected End: ${site.expectedEndDate || "N/A"}`, 25, yPosition);
+    // Remove expectedEndDate as it doesn't exist in the Site type
     yPosition += 12;
     
     // Site employees
@@ -209,7 +210,10 @@ export const exportToPDF = async () => {
       doc.text(`Assigned Employees (${siteEmps.length}):`, 25, yPosition);
       yPosition += 6;
       siteEmps.slice(0, 3).forEach((se, i) => {
-        doc.text(`- ${se.employeeName}`, 30, yPosition);
+        // Use employee ID instead of name since employeeName doesn't exist
+        const employee = employees.find(emp => emp.id === se.employeeId);
+        const employeeName = employee ? employee.name : se.employeeId;
+        doc.text(`- ${employeeName}`, 30, yPosition);
         yPosition += 4;
       });
       if (siteEmps.length > 3) {

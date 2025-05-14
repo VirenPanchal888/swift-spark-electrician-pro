@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, File, FileText, FilePdf, FileJson } from 'lucide-react';
+import { Download, File, FileText, FilePlusIcon } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
@@ -98,7 +98,7 @@ export const SiteDataStats = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>Comprehensive Export Options</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => handleExport(exportData)}>
-                <FileJson className="mr-2 h-4 w-4" />
+                <File className="mr-2 h-4 w-4" />
                 Complete JSON Backup (All Historical Data)
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -107,7 +107,7 @@ export const SiteDataStats = () => {
                 Full Excel Spreadsheet (All Sheets)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleExport(exportToPDF)}>
-                <FilePdf className="mr-2 h-4 w-4" />
+                <FilePlusIcon className="mr-2 h-4 w-4" />
                 Detailed PDF Report with Screenshots
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleExport(exportToCSV)}>
