@@ -1,3 +1,4 @@
+
 import jsPDF from 'jspdf';
 import { useStore } from './store';
 import { MaterialUsage } from './types';
@@ -123,7 +124,7 @@ export const exportToPDF = async () => {
     yPosition += 6;
     doc.text(`Quantity: ${transaction.quantity}`, 25, yPosition);
     yPosition += 6;
-    doc.text(`Site: ${transaction.site || "N/A"}`, 25, yPosition);
+    // Removed the reference to `transaction.site` as it doesn't exist in the Transaction type
     yPosition += 6;
     // Skip transaction type since it doesn't exist in the Transaction type
     yPosition += 12;
