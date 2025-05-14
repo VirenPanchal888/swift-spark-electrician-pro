@@ -6,8 +6,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Check, X, Printer, Share } from "lucide-react";
+import { Check, X, FileText, Share } from "lucide-react";
 import * as XLSX from 'xlsx';
+import { generateSalaryReceipt } from "@/lib/receiptUtils";
+
 interface SalaryFormProps {
   onViewRecords: () => void;
 }
@@ -117,18 +119,28 @@ export const SalaryForm = ({
 
     // Create record
     try {
-      addSalaryRecord({
+      const newRecord = {
         employeeName,
         salaryPaid: parseFloat(salaryPaid),
         screenshot: screenshot || undefined,
         date: dateFormatted,
         time: timeFormatted
-      });
+      };
+      
+      // Add to store
+      const fullRecord = addSalaryRecord(newRecord);
+      
       toast({
         title: "Success",
         description: "Salary record saved successfully!",
         variant: "default"
       });
+      
+      // Ask if user wants to download receipt
+      const downloadReceipt = window.confirm("Would you like to download a receipt for this payment?");
+      if (downloadReceipt) {
+        generateSalaryReceipt(fullRecord);
+      }
 
       // Reset form
       setEmployeeName("");
@@ -312,7 +324,7 @@ export const SalaryForm = ({
       <CardFooter className="flex flex-col space-y-2">
         <div className="flex justify-between w-full">
           <Button type="button" variant="outline" onClick={generateExcelReport} className="flex-1 mr-2">
-            <Printer className="mr-2 h-4 w-4" />
+            <FileText className="mr-2 h-4 w-4" />
             Print Report
           </Button>
           

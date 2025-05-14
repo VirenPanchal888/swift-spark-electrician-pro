@@ -9,10 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Share } from "lucide-react";
+import { ArrowLeft, FileText, Download, Share } from "lucide-react";
 import { SalaryRecord } from "@/lib/types";
 import * as XLSX from 'xlsx';
 import { useToast } from "@/hooks/use-toast";
+import { generateSalaryReceipt } from "@/lib/receiptUtils";
 
 interface SalaryRecordDetailsProps {
   record: SalaryRecord;
@@ -50,6 +51,24 @@ export const SalaryRecordDetails = ({ record, onBack }: SalaryRecordDetailsProps
       title: "Receipt Generated",
       description: "Salary receipt has been downloaded",
     });
+  };
+
+  // Generate and download PDF receipt
+  const downloadReceipt = () => {
+    try {
+      generateSalaryReceipt(record);
+      toast({
+        title: "Receipt Generated",
+        description: "Salary receipt PDF has been downloaded",
+      });
+    } catch (error) {
+      console.error("Error generating receipt:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate receipt. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Share via WhatsApp
@@ -116,24 +135,35 @@ export const SalaryRecordDetails = ({ record, onBack }: SalaryRecordDetailsProps
         </div>
       </CardContent>
       
-      <CardFooter className="flex space-x-4">
+      <CardFooter className="flex flex-col space-y-4">
         <Button 
-          variant="outline" 
-          onClick={generateExcelReport}
-          className="flex-1"
+          variant="default" 
+          onClick={downloadReceipt}
+          className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
         >
-          <Printer className="mr-2 h-4 w-4" />
-          Print Receipt
+          <FileText className="mr-2 h-4 w-4" />
+          Download Receipt
         </Button>
         
-        <Button 
-          variant="outline" 
-          onClick={shareViaWhatsApp}
-          className="flex-1"
-        >
-          <Share className="mr-2 h-4 w-4" />
-          Share
-        </Button>
+        <div className="flex space-x-4 w-full">
+          <Button 
+            variant="outline" 
+            onClick={generateExcelReport}
+            className="flex-1"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={shareViaWhatsApp}
+            className="flex-1"
+          >
+            <Share className="mr-2 h-4 w-4" />
+            Share
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Transaction, Employee, MaterialUsage, Material, Document, Site, SiteEmployee, SiteMaterial, SiteTask, SiteDocument, TaskStatus, SalaryRecord } from './types';
@@ -62,7 +61,7 @@ interface StoreState {
   deleteSiteDocument: (id: string) => void;
   
   // Salary Record actions
-  addSalaryRecord: (salaryRecord: Omit<SalaryRecord, 'id'>) => void;
+  addSalaryRecord: (salaryRecord: Omit<SalaryRecord, 'id'>) => SalaryRecord;
   updateSalaryRecord: (salaryRecord: SalaryRecord) => void;
   deleteSalaryRecord: (id: string) => void;
   getSalaryRecordsByEmployee: (employeeName: string) => SalaryRecord[];
@@ -363,6 +362,7 @@ export const useStore = create<StoreState>()(
         set((state) => ({
           salaryRecords: [newSalaryRecord, ...state.salaryRecords],
         }));
+        return newSalaryRecord;
       },
       
       updateSalaryRecord: (updatedSalaryRecord) => {
