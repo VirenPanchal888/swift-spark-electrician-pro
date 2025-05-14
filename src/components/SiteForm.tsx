@@ -14,13 +14,14 @@ import { format } from 'date-fns';
 import { SiteStatus } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
 
 interface SiteFormProps {
   onClose: () => void;
 }
 
 const SiteForm = ({ onClose }: SiteFormProps) => {
-  const { addSite, addSiteEmployee, employees } = useStore();
+  const { addSite, addSiteEmployee, employees, addEmployee } = useStore();
   const { toast } = useToast();
   
   const [name, setName] = useState('');
@@ -33,6 +34,10 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
     role: string;
   }[]>([]);
   const [showWorkerSelector, setShowWorkerSelector] = useState(false);
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualWorkerName, setManualWorkerName] = useState('');
+  const [manualWorkerRole, setManualWorkerRole] = useState('worker');
+  const [manualWorkers, setManualWorkers] = useState<{name: string; role: string}[]>([]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +63,7 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
     const newSite = addSite(newSiteData);
     const newSiteId = newSite.id;
     
-    // Add workers to the site if any are selected
+    // Add workers to the site if any are selected from existing employees
     if (selectedWorkers.length > 0) {
       selectedWorkers.forEach(worker => {
         addSiteEmployee({
@@ -69,7 +74,33 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
           startDate: startDate.toISOString()
         });
       });
+    }
+    
+    // Create and add manually entered workers
+    if (manualWorkers.length > 0) {
+      manualWorkers.forEach(worker => {
+        // First add the employee to the system
+        const newEmployee = addEmployee({
+          name: worker.name,
+          siteLocation: newSiteId,
+          startDate: startDate.toISOString()
+        });
+        
+        // Then assign them to the site
+        addSiteEmployee({
+          siteId: newSiteId,
+          employeeId: newEmployee.id,
+          role: worker.role,
+          shift: "day",  // Default value
+          startDate: startDate.toISOString()
+        });
+      });
       
+      toast({
+        title: "Site Added with Workers",
+        description: `${name} created with ${selectedWorkers.length + manualWorkers.length} assigned workers`
+      });
+    } else if (selectedWorkers.length > 0) {
       toast({
         title: "Site Added with Workers",
         description: `${name} created with ${selectedWorkers.length} assigned workers`
@@ -87,6 +118,7 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
     setStatus('active');
     setStartDate(new Date());
     setSelectedWorkers([]);
+    setManualWorkers([]);
     onClose();
   };
   
@@ -104,6 +136,39 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
     setSelectedWorkers(
       selectedWorkers.map(w => 
         w.employeeId === employeeId ? { ...w, role } : w
+      )
+    );
+  };
+  
+  const handleAddManualWorker = () => {
+    if (!manualWorkerName.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter a worker name",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Add the worker to the manual workers list
+    setManualWorkers([
+      ...manualWorkers, 
+      { name: manualWorkerName, role: manualWorkerRole }
+    ]);
+    
+    // Reset the input fields for the next entry
+    setManualWorkerName('');
+    setManualWorkerRole('worker');
+  };
+  
+  const handleRemoveManualWorker = (index: number) => {
+    setManualWorkers(manualWorkers.filter((_, i) => i !== index));
+  };
+  
+  const handleUpdateManualWorkerRole = (index: number, role: string) => {
+    setManualWorkers(
+      manualWorkers.map((worker, i) => 
+        i === index ? { ...worker, role } : worker
       )
     );
   };
@@ -187,14 +252,24 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>Site Workers</Label>
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm"
-                onClick={() => setShowWorkerSelector(!showWorkerSelector)}
-              >
-                {showWorkerSelector ? "Hide" : "Add Workers"} <Users className="ml-2 h-4 w-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowWorkerSelector(!showWorkerSelector)}
+                >
+                  {showWorkerSelector ? "Hide" : "Existing Workers"} <Users className="ml-2 h-4 w-4" />
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowManualEntry(!showManualEntry)}
+                >
+                  {showManualEntry ? "Hide" : "Add New Workers"} <Plus className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
             
             {showWorkerSelector && (
@@ -227,9 +302,90 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
               </div>
             )}
             
+            {showManualEntry && (
+              <div className="border rounded-md p-3 space-y-3">
+                <Label className="mb-2 block">Add New Workers</Label>
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Label htmlFor="worker-name" className="text-xs">Worker Name</Label>
+                    <Input 
+                      id="worker-name"
+                      value={manualWorkerName}
+                      onChange={(e) => setManualWorkerName(e.target.value)}
+                      placeholder="Enter worker name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="w-[110px]">
+                    <Label htmlFor="worker-role" className="text-xs">Role</Label>
+                    <Select
+                      value={manualWorkerRole}
+                      onValueChange={(value) => setManualWorkerRole(value)}
+                    >
+                      <SelectTrigger id="worker-role" className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="supervisor">Supervisor</SelectItem>
+                        <SelectItem value="technician">Technician</SelectItem>
+                        <SelectItem value="worker">Worker</SelectItem>
+                        <SelectItem value="helper">Helper</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    type="button" 
+                    onClick={handleAddManualWorker}
+                    size="icon"
+                    className="mb-0.5"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                {manualWorkers.length > 0 && (
+                  <div className="mt-3">
+                    <Label className="text-xs mb-2 block">Added Workers ({manualWorkers.length})</Label>
+                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                      {manualWorkers.map((worker, index) => (
+                        <div key={index} className="flex items-center justify-between bg-muted/30 p-2 rounded-md">
+                          <span className="font-medium">{worker.name}</span>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={worker.role}
+                              onValueChange={(value) => handleUpdateManualWorkerRole(index, value)}
+                            >
+                              <SelectTrigger className="w-[110px] h-8">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="supervisor">Supervisor</SelectItem>
+                                <SelectItem value="technician">Technician</SelectItem>
+                                <SelectItem value="worker">Worker</SelectItem>
+                                <SelectItem value="helper">Helper</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleRemoveManualWorker(index)}
+                              className="h-8 w-8"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            
             {selectedWorkers.length > 0 && (
               <div className="border rounded-md p-3">
-                <Label className="mb-2 block">Selected Workers ({selectedWorkers.length})</Label>
+                <Label className="mb-2 block">Selected Existing Workers ({selectedWorkers.length})</Label>
                 {selectedWorkers.map((worker) => {
                   const employee = employees.find(e => e.id === worker.employeeId);
                   return (
