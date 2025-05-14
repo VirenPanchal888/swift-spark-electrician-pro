@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
@@ -110,7 +111,12 @@ const Sites = () => {
                   />
                   
                   <div className="flex justify-between items-center">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <Tabs 
+                      value={activeTab} 
+                      onValueChange={setActiveTab} 
+                      className="w-full"
+                      defaultValue="overview"
+                    >
                       <div className="overflow-x-auto scrollable-tabs">
                         <TabsList className="w-full justify-start">
                           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -120,6 +126,32 @@ const Sites = () => {
                           <TabsTrigger value="attachments">Attachments</TabsTrigger>
                         </TabsList>
                       </div>
+                      
+                      <TabsContent value="overview">
+                        <SiteOverview
+                          siteId={selectedSite.id}
+                          getSiteEmployeesCount={getSiteEmployeesCount}
+                          getSiteMaterialsCount={getSiteMaterialsCount}
+                          siteTasks={siteTasks}
+                          onTabChange={setActiveTab}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="employees" className="space-y-4 mt-4">
+                        <SiteEmployeeAllocation siteId={selectedSite.id} />
+                      </TabsContent>
+                      
+                      <TabsContent value="materials" className="space-y-4 mt-4">
+                        <SiteMaterialFlow siteId={selectedSite.id} />
+                      </TabsContent>
+                      
+                      <TabsContent value="tasks" className="space-y-4 mt-4">
+                        <TaskBoard siteId={selectedSite.id} />
+                      </TabsContent>
+                      
+                      <TabsContent value="attachments" className="space-y-4 mt-4">
+                        <SiteAttachments siteId={selectedSite.id} />
+                      </TabsContent>
                     </Tabs>
                     
                     {activeTab === 'employees' && (
@@ -138,32 +170,6 @@ const Sites = () => {
                       </Dialog>
                     )}
                   </div>
-                  
-                  <TabsContent value="overview">
-                    <SiteOverview
-                      siteId={selectedSite.id}
-                      getSiteEmployeesCount={getSiteEmployeesCount}
-                      getSiteMaterialsCount={getSiteMaterialsCount}
-                      siteTasks={siteTasks}
-                      onTabChange={setActiveTab}
-                    />
-                  </TabsContent>
-                  
-                  <TabsContent value="employees" className="space-y-4 mt-4">
-                    <SiteEmployeeAllocation siteId={selectedSite.id} />
-                  </TabsContent>
-                  
-                  <TabsContent value="materials" className="space-y-4 mt-4">
-                    <SiteMaterialFlow siteId={selectedSite.id} />
-                  </TabsContent>
-                  
-                  <TabsContent value="tasks" className="space-y-4 mt-4">
-                    <TaskBoard siteId={selectedSite.id} />
-                  </TabsContent>
-                  
-                  <TabsContent value="attachments" className="space-y-4 mt-4">
-                    <SiteAttachments siteId={selectedSite.id} />
-                  </TabsContent>
                 </motion.div>
               ) : (
                 <SiteEmptyState 
