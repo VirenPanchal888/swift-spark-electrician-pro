@@ -87,13 +87,15 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
         });
         
         // Then assign them to the site
-        addSiteEmployee({
-          siteId: newSiteId,
-          employeeId: newEmployee.id,
-          role: worker.role,
-          shift: "day",  // Default value
-          startDate: startDate.toISOString()
-        });
+        if (newEmployee && newEmployee.id) {
+          addSiteEmployee({
+            siteId: newSiteId,
+            employeeId: newEmployee.id,
+            role: worker.role,
+            shift: "day",  // Default value
+            startDate: startDate.toISOString()
+          });
+        }
       });
       
       toast({
@@ -435,3 +437,4 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
 };
 
 export default SiteForm;
+
