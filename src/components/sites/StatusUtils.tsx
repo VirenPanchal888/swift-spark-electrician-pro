@@ -3,23 +3,17 @@ import { ReactNode } from 'react';
 import { CircleCheck, CirclePause, CircleAlert } from 'lucide-react';
 import { SiteStatus } from '@/lib/types';
 
-// Helper function to get status variant
-export const getStatusVariant = (status: SiteStatus): ReactNode => {
+// Helper function to get status variant as string for Badge component
+export const getStatusVariant = (status: string): "default" | "destructive" | "outline" | "secondary" => {
   switch (status) {
     case 'active':
-      return <span className="status-indicator status-active flex gap-2 items-center">
-        <CircleCheck className="h-4 w-4" /> Active
-      </span>;
+      return "default";
     case 'paused':
-      return <span className="status-indicator status-paused flex gap-2 items-center">
-        <CirclePause className="h-4 w-4" /> Paused
-      </span>;
+      return "secondary";
     case 'completed':
-      return <span className="status-indicator status-completed flex gap-2 items-center">
-        <CircleCheck className="h-4 w-4" /> Completed
-      </span>;
+      return "outline";
     default:
-      return null;
+      return "default";
   }
 };
 

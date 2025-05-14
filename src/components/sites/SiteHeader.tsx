@@ -12,7 +12,7 @@ interface SiteHeaderProps {
   location: string;
   startDate: string;
   status: string;
-  getStatusVariant: (status: string) => string;
+  getStatusVariant: (status: string) => "default" | "destructive" | "outline" | "secondary";
   getSiteDuration: (site: { startDate: string }) => number;
   getSiteMaterialsCount: (siteId: string) => number;
   getSiteEmployeesCount: (siteId: string) => number;
