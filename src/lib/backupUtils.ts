@@ -1,3 +1,4 @@
+
 import { useStore } from './store';
 import { toast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
@@ -21,7 +22,18 @@ export interface BackupData {
     dark_mode: boolean;
     language: string;
     export_version: string;
+    export_timestamp: number;
+    app_version: string;
   };
+  meta_data?: {
+    total_cost: number;
+    total_employees: number;
+    total_sites: number;
+    total_materials: number;
+    export_timestamp: string;
+    historical_data: boolean;
+  };
+  dashboardScreenshots?: Record<string, string>;
 }
 
 // Export all data to JSON file
@@ -30,8 +42,8 @@ export const exportData = async () => {
   
   // Show toast notification about the export starting
   toast({
-    title: "Starting Backup Export",
-    description: "Preparing comprehensive data export..."
+    title: "Starting Comprehensive Backup",
+    description: "Preparing full historical data export..."
   });
   
   // Capture dashboard screenshots if in browser environment
@@ -55,6 +67,9 @@ export const exportData = async () => {
     }
   }
   
+  // Calculate totals for metadata
+  const totalCost = store.calculateTotalCost();
+  
   const backupData: BackupData = {
     user_id: `user_${Math.floor(Math.random() * 10000)}`,
     exported_on: new Date().toISOString(),
@@ -71,13 +86,23 @@ export const exportData = async () => {
     app_settings: {
       dark_mode: document.documentElement.getAttribute('data-theme') === 'dark',
       language: 'en-IN',
-      export_version: '1.1.0'
+      export_version: '1.2.0',
+      export_timestamp: Date.now(),
+      app_version: '1.0.0'
+    },
+    meta_data: {
+      total_cost: totalCost,
+      total_employees: store.employees.length,
+      total_sites: store.sites.length,
+      total_materials: store.materials.length,
+      export_timestamp: new Date().toISOString(),
+      historical_data: true
     }
   };
   
   // Add screenshot data if available
   if (Object.keys(dashboardImages).length > 0) {
-    backupData['dashboardScreenshots'] = dashboardImages;
+    backupData.dashboardScreenshots = dashboardImages;
   }
   
   const jsonString = JSON.stringify(backupData, null, 2);
@@ -93,8 +118,8 @@ export const exportData = async () => {
   document.body.removeChild(downloadLink);
   
   toast({
-    title: "Backup Exported Successfully",
-    description: "Your complete data has been exported to a JSON file"
+    title: "Complete Backup Exported",
+    description: "Your comprehensive historical data has been exported to a JSON file"
   });
   
   // Clean up the URL
@@ -107,8 +132,8 @@ export const exportToCSV = async () => {
   
   // Show toast notification
   toast({
-    title: "Starting CSV Export",
-    description: "Preparing your data export..."
+    title: "Starting Comprehensive CSV Export",
+    description: "Preparing complete historical data export..."
   });
   
   // Create a CSV string for each data type
@@ -135,6 +160,20 @@ export const exportToCSV = async () => {
     }
   });
   
+  // Add metadata file
+  const metadata = {
+    exported_on: new Date().toISOString(),
+    app_version: '1.0.0',
+    total_transactions: store.transactions.length,
+    total_employees: store.employees.length,
+    total_materials: store.materials.length,
+    total_sites: store.sites.length,
+    total_documents: store.documents.length,
+    total_salary_records: (store.salaryRecords || []).length,
+    historical_data: true
+  };
+  zip.file('metadata.json', JSON.stringify(metadata, null, 2));
+  
   // Generate the zip file
   const content = await zip.generateAsync({ type: 'blob' });
   
@@ -142,14 +181,14 @@ export const exportToCSV = async () => {
   const url = URL.createObjectURL(content);
   const downloadLink = document.createElement('a');
   downloadLink.href = url;
-  downloadLink.download = `powerhouse_data_export_${new Date().toISOString().split('T')[0]}.zip`;
+  downloadLink.download = `powerhouse_complete_data_export_${new Date().toISOString().split('T')[0]}.zip`;
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);
   
   toast({
-    title: "CSV Export Successful",
-    description: "Your data has been exported to CSV files in a zip archive"
+    title: "Comprehensive CSV Export Successful",
+    description: "Your complete historical data has been exported to CSV files in a zip archive"
   });
   
   // Clean up the URL
@@ -230,18 +269,47 @@ export const exportToExcel = () => {
     XLSX.utils.book_append_sheet(wb, siteTasksWS, "Site Tasks");
   }
   
+  // Add site documents sheet
+  if (store.siteDocuments.length > 0) {
+    const siteDocsWS = XLSX.utils.json_to_sheet(store.siteDocuments);
+    XLSX.utils.book_append_sheet(wb, siteDocsWS, "Site Documents");
+  }
+  
+  // Add documents sheet
+  if (store.documents.length > 0) {
+    const docsWS = XLSX.utils.json_to_sheet(store.documents);
+    XLSX.utils.book_append_sheet(wb, docsWS, "Documents");
+  }
+  
   // Add salary records sheet
   if (store.salaryRecords && store.salaryRecords.length > 0) {
     const salaryRecordsWS = XLSX.utils.json_to_sheet(store.salaryRecords);
     XLSX.utils.book_append_sheet(wb, salaryRecordsWS, "Salary Records");
   }
   
+  // Add metadata sheet
+  const metadata = [
+    {
+      exported_on: new Date().toISOString(),
+      app_version: '1.0.0',
+      total_transactions: store.transactions.length,
+      total_employees: store.employees.length,
+      total_materials: store.materials.length,
+      total_sites: store.sites.length,
+      total_documents: store.documents.length,
+      total_salary_records: (store.salaryRecords || []).length,
+      historical_data: true
+    }
+  ];
+  const metadataWS = XLSX.utils.json_to_sheet(metadata);
+  XLSX.utils.book_append_sheet(wb, metadataWS, "Export Metadata");
+  
   // Write workbook and trigger download
-  XLSX.writeFile(wb, `powerhouse_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+  XLSX.writeFile(wb, `powerhouse_complete_export_${new Date().toISOString().split('T')[0]}.xlsx`);
   
   toast({
-    title: "Excel Export Successful",
-    description: "Your data has been exported to an Excel file"
+    title: "Complete Excel Export Successful",
+    description: "Your comprehensive historical data has been exported to an Excel file with multiple sheets"
   });
 };
 
@@ -273,7 +341,7 @@ export const importData = (jsonData: string): Promise<boolean> => {
       
       toast({
         title: "Data Restored Successfully",
-        description: `Backup from ${new Date(backupData.exported_on).toLocaleString()} has been imported`
+        description: `Comprehensive backup from ${new Date(backupData.exported_on).toLocaleString()} has been imported`
       });
       
       resolve(true);
@@ -332,6 +400,12 @@ export const importFromExcel = (file: File): Promise<boolean> => {
             case 'site tasks':
               if (jsonData.length > 0) store.siteTasks = jsonData as any[];
               break;
+            case 'site documents':
+              if (jsonData.length > 0) store.siteDocuments = jsonData as any[];
+              break;
+            case 'documents':
+              if (jsonData.length > 0) store.documents = jsonData as any[];
+              break;
             case 'salary records':
               if (jsonData.length > 0) store.salaryRecords = jsonData as any[];
               break;
@@ -340,7 +414,7 @@ export const importFromExcel = (file: File): Promise<boolean> => {
         
         toast({
           title: "Excel Import Successful",
-          description: "Your data has been imported from the Excel file"
+          description: "Your comprehensive data has been imported from the Excel file"
         });
         
         resolve(true);

@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, File, FileText } from 'lucide-react';
+import { Download, File, FileText, FilePdf, FileJson } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { exportData, exportToExcel, exportToCSV } from '@/lib/backupUtils';
 import { exportToPDF } from '@/lib/exportUtils';
@@ -29,6 +29,7 @@ import { toast } from '@/hooks/use-toast';
 
 export const SiteDataStats = () => {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const { formatActiveTime } = useActiveTime();
   
   const transactions = useStore(state => state.transactions);
@@ -37,11 +38,21 @@ export const SiteDataStats = () => {
   const sites = useStore(state => state.sites);
   const documents = useStore(state => state.documents);
   
+  const handleExport = async (exportFn: () => Promise<void> | void) => {
+    try {
+      setIsExporting(true);
+      await exportFn();
+    } finally {
+      setIsExporting(false);
+    }
+  };
+  
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
     try {
+      setIsExporting(true);
       // Check file extension
       if (file.name.endsWith('.json')) {
         const text = await file.text();
@@ -59,6 +70,8 @@ export const SiteDataStats = () => {
       setImportDialogOpen(false);
     } catch (error) {
       console.error("Import error:", error);
+    } finally {
+      setIsExporting(false);
     }
   };
   
@@ -76,29 +89,30 @@ export const SiteDataStats = () => {
               <Button 
                 variant="outline" 
                 className="justify-start w-full"
+                disabled={isExporting}
               >
                 <Download className="mr-2 h-4 w-4" />
-                Export Data
+                {isExporting ? 'Exporting...' : 'Export Data'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Export Options</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => exportData()}>
-                <FileText className="mr-2 h-4 w-4" />
-                Complete JSON Backup
+              <DropdownMenuLabel>Comprehensive Export Options</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleExport(exportData)}>
+                <FileJson className="mr-2 h-4 w-4" />
+                Complete JSON Backup (All Historical Data)
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => exportToExcel()}>
+              <DropdownMenuItem onClick={() => handleExport(exportToExcel)}>
                 <File className="mr-2 h-4 w-4" />
-                Excel Spreadsheet
+                Full Excel Spreadsheet (All Sheets)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportToPDF()}>
-                <FileText className="mr-2 h-4 w-4" />
-                PDF Report with Screenshots
+              <DropdownMenuItem onClick={() => handleExport(exportToPDF)}>
+                <FilePdf className="mr-2 h-4 w-4" />
+                Detailed PDF Report with Screenshots
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => exportToCSV()}>
+              <DropdownMenuItem onClick={() => handleExport(exportToCSV)}>
                 <FileText className="mr-2 h-4 w-4" />
-                CSV Archive (Zip)
+                Complete CSV Archive (Zip)
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -107,6 +121,7 @@ export const SiteDataStats = () => {
             variant="outline" 
             className="justify-start"
             onClick={() => setImportDialogOpen(true)}
+            disabled={isExporting}
           >
             <Download className="mr-2 h-4 w-4 rotate-180" />
             Import Data
@@ -129,7 +144,7 @@ export const SiteDataStats = () => {
           <DialogHeader>
             <DialogTitle>Import Data</DialogTitle>
             <DialogDescription>
-              Upload JSON backup or Excel file to restore your data.
+              Upload JSON backup or Excel file to restore your complete historical data.
             </DialogDescription>
           </DialogHeader>
           
@@ -155,4 +170,3 @@ export const SiteDataStats = () => {
     </Card>
   );
 };
-
