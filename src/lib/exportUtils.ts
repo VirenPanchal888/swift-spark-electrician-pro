@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import { useStore } from './store';
 import { MaterialUsage } from './types';
