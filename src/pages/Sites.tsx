@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +16,9 @@ import SiteHeader from '@/components/sites/SiteHeader';
 import SiteOverview from '@/components/sites/SiteOverview';
 import SiteEmptyState from '@/components/sites/SiteEmptyState';
 import { getStatusVariant, getStatusIcon } from '@/components/sites/StatusUtils';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Plus, UserPlus } from 'lucide-react';
 
 const Sites = () => {
   const { sites, employees, siteMaterials, siteTasks } = useStore();
@@ -25,6 +27,7 @@ const Sites = () => {
   const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
   const [showAddSiteForm, setShowAddSiteForm] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showAddEmployeeDialog, setShowAddEmployeeDialog] = useState(false);
   
   useEffect(() => {
     document.title = 'Site Tracker | Powerhouse Solutions';
@@ -106,43 +109,61 @@ const Sites = () => {
                     siteId={selectedSite.id}
                   />
                   
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <div className="overflow-x-auto scrollable-tabs">
-                      <TabsList className="w-full justify-start">
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="employees">Employees</TabsTrigger>
-                        <TabsTrigger value="materials">Materials</TabsTrigger>
-                        <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                        <TabsTrigger value="attachments">Attachments</TabsTrigger>
-                      </TabsList>
-                    </div>
+                  <div className="flex justify-between items-center">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                      <div className="overflow-x-auto scrollable-tabs">
+                        <TabsList className="w-full justify-start">
+                          <TabsTrigger value="overview">Overview</TabsTrigger>
+                          <TabsTrigger value="employees">Employees</TabsTrigger>
+                          <TabsTrigger value="materials">Materials</TabsTrigger>
+                          <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                          <TabsTrigger value="attachments">Attachments</TabsTrigger>
+                        </TabsList>
+                      </div>
+                    </Tabs>
                     
-                    <TabsContent value="overview">
-                      <SiteOverview
-                        siteId={selectedSite.id}
-                        getSiteEmployeesCount={getSiteEmployeesCount}
-                        getSiteMaterialsCount={getSiteMaterialsCount}
-                        siteTasks={siteTasks}
-                        onTabChange={setActiveTab}
-                      />
-                    </TabsContent>
-                    
-                    <TabsContent value="employees" className="space-y-4 mt-4">
-                      <SiteEmployeeAllocation siteId={selectedSite.id} />
-                    </TabsContent>
-                    
-                    <TabsContent value="materials" className="space-y-4 mt-4">
-                      <SiteMaterialFlow siteId={selectedSite.id} />
-                    </TabsContent>
-                    
-                    <TabsContent value="tasks" className="space-y-4 mt-4">
-                      <TaskBoard siteId={selectedSite.id} />
-                    </TabsContent>
-                    
-                    <TabsContent value="attachments" className="space-y-4 mt-4">
-                      <SiteAttachments siteId={selectedSite.id} />
-                    </TabsContent>
-                  </Tabs>
+                    {activeTab === 'employees' && (
+                      <Dialog open={showAddEmployeeDialog} onOpenChange={setShowAddEmployeeDialog}>
+                        <DialogTrigger asChild>
+                          <Button size="sm" className="ml-2 flex-shrink-0">
+                            <UserPlus className="h-4 w-4 mr-1" /> Add Worker
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <div className="p-6">
+                            <h3 className="text-lg font-medium mb-4">Add Worker</h3>
+                            {/* We'll reuse the built-in employee allocation dialog */}
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
+                  
+                  <TabsContent value="overview">
+                    <SiteOverview
+                      siteId={selectedSite.id}
+                      getSiteEmployeesCount={getSiteEmployeesCount}
+                      getSiteMaterialsCount={getSiteMaterialsCount}
+                      siteTasks={siteTasks}
+                      onTabChange={setActiveTab}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="employees" className="space-y-4 mt-4">
+                    <SiteEmployeeAllocation siteId={selectedSite.id} />
+                  </TabsContent>
+                  
+                  <TabsContent value="materials" className="space-y-4 mt-4">
+                    <SiteMaterialFlow siteId={selectedSite.id} />
+                  </TabsContent>
+                  
+                  <TabsContent value="tasks" className="space-y-4 mt-4">
+                    <TaskBoard siteId={selectedSite.id} />
+                  </TabsContent>
+                  
+                  <TabsContent value="attachments" className="space-y-4 mt-4">
+                    <SiteAttachments siteId={selectedSite.id} />
+                  </TabsContent>
                 </motion.div>
               ) : (
                 <SiteEmptyState 
