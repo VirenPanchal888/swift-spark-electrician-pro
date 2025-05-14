@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
@@ -11,7 +10,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, X, Users, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { SiteStatus } from '@/lib/types';
+import { SiteStatus, Employee } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
@@ -84,10 +83,10 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
           name: worker.name,
           siteLocation: newSiteId,
           startDate: startDate.toISOString()
-        });
+        }) as Employee | undefined;
         
-        // Then assign them to the site
-        if (newEmployee && newEmployee.id) {
+        // Then assign them to the site if we have a valid employee with ID
+        if (newEmployee && typeof newEmployee === 'object' && 'id' in newEmployee) {
           addSiteEmployee({
             siteId: newSiteId,
             employeeId: newEmployee.id,
@@ -437,4 +436,3 @@ const SiteForm = ({ onClose }: SiteFormProps) => {
 };
 
 export default SiteForm;
-
