@@ -25,7 +25,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { importData, importFromExcel } from '@/lib/backupUtils';
-import { toast } from '@/hooks/use-toast';
+import { toast } from '@/components/ui/use-toast';
 
 export const SiteDataStats = () => {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
@@ -41,7 +41,24 @@ export const SiteDataStats = () => {
   const handleExport = async (exportFn: () => Promise<void> | void) => {
     try {
       setIsExporting(true);
+      toast({
+        title: "Export Started",
+        description: "Preparing your file for download..."
+      });
+      
       await exportFn();
+      
+      toast({
+        title: "Export Successful",
+        description: "Your file has been downloaded successfully."
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export Failed",
+        description: "There was an error exporting your data.",
+        variant: "destructive"
+      });
     } finally {
       setIsExporting(false);
     }

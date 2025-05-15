@@ -5,6 +5,27 @@ import { MaterialUsage } from './types';
 import { formatRupees } from './formatters';
 import html2canvas from 'html2canvas';
 
+// Helper function to safely save a file to downloads
+const saveFile = (blob: Blob, filename: string) => {
+  // Create a URL for the blob
+  const url = window.URL.createObjectURL(blob);
+  
+  // Create a download link
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  
+  // Append link to body (required for Firefox)
+  document.body.appendChild(a);
+  
+  // Trigger download
+  a.click();
+  
+  // Clean up
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+};
+
 // Export data to PDF file with dashboard screenshots and complete data
 export const exportToPDF = async () => {
   const store = useStore.getState();
@@ -124,9 +145,9 @@ export const exportToPDF = async () => {
     yPosition += 6;
     doc.text(`Quantity: ${transaction.quantity}`, 25, yPosition);
     yPosition += 6;
-    // Removed the reference to `transaction.site` as it doesn't exist in the Transaction type
+    // Site information removed as it doesn't exist in the Transaction type
     yPosition += 6;
-    // Skip transaction type since it doesn't exist in the Transaction type
+    // Transaction type removed as it doesn't exist in the Transaction type
     yPosition += 12;
   });
   
@@ -194,14 +215,14 @@ export const exportToPDF = async () => {
     yPosition += 8;
     
     doc.setFontSize(10);
-    // Remove clientName as it doesn't exist in the Site type
+    // Client name removed as it doesn't exist in the Site type
     doc.text(`Location: ${site.location}`, 25, yPosition);
     yPosition += 6;
     doc.text(`Status: ${site.status}`, 25, yPosition);
     yPosition += 6;
     doc.text(`Start Date: ${site.startDate}`, 25, yPosition);
     yPosition += 6;
-    // Remove expectedEndDate as it doesn't exist in the Site type
+    // Expected end date removed as it doesn't exist in the Site type
     yPosition += 12;
     
     // Site employees
@@ -290,6 +311,16 @@ export const exportToPDF = async () => {
   doc.setFontSize(8);
   doc.text("* This report includes all available data from the Powerhouse application.", 20, 280);
   
-  // Save the PDF file with comprehensive name
-  doc.save(`powerhouse_complete_report_${new Date().toISOString().split('T')[0]}.pdf`);
+  try {
+    // Save the PDF file with comprehensive name
+    const pdfOutput = doc.output('blob');
+    const filename = `powerhouse_complete_report_${new Date().toISOString().split('T')[0]}.pdf`;
+    
+    // Use the helper function to save the file
+    saveFile(pdfOutput, filename);
+    
+  } catch (error) {
+    console.error("Failed to save PDF:", error);
+    throw new Error("Failed to save PDF file");
+  }
 };
