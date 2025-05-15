@@ -92,7 +92,7 @@ const Navbar = () => {
             y: 0
           }} transition={{
             duration: 0.3
-          }} className="text-xl">Powerhouse  👨🏻‍🔧</motion.span>
+          }} className="text-xl">Powerhouse Solutions</motion.span>
           </Link>
         </div>
 
