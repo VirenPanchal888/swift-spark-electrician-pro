@@ -14,6 +14,7 @@ import { SalaryRecord } from "@/lib/types";
 import * as XLSX from 'xlsx';
 import { useToast } from "@/hooks/use-toast";
 import { generateSalaryReceipt } from "@/lib/receiptUtils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SalaryRecordDetailsProps {
   record: SalaryRecord;
@@ -22,6 +23,7 @@ interface SalaryRecordDetailsProps {
 
 export const SalaryRecordDetails = ({ record, onBack }: SalaryRecordDetailsProps) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   // Generate and download Excel report for this specific record
   const generateExcelReport = () => {
@@ -87,47 +89,47 @@ export const SalaryRecordDetails = ({ record, onBack }: SalaryRecordDetailsProps
   };
   
   return (
-    <Card className="w-full animate-fade-in">
-      <CardHeader className="flex flex-row items-center">
-        <Button variant="ghost" size="icon" onClick={onBack} className="mr-2">
-          <ArrowLeft className="h-5 w-5" />
+    <Card className="w-full animate-fade-in border-0 sm:border">
+      <CardHeader className="flex flex-row items-center px-3 py-3 sm:px-6 sm:py-4">
+        <Button variant="ghost" size="sm" onClick={onBack} className="mr-2 p-1 sm:p-2">
+          <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           <span className="sr-only">Back</span>
         </Button>
-        <CardTitle className="text-xl">Salary Payment Details</CardTitle>
+        <CardTitle className="text-lg sm:text-xl">Salary Payment Details</CardTitle>
       </CardHeader>
       
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Employee</p>
-              <p className="text-lg font-medium">{record.employeeName}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Employee</p>
+              <p className="text-base sm:text-lg font-medium">{record.employeeName}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Amount</p>
-              <p className="text-lg font-medium">₹{record.salaryPaid.toFixed(2)}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Amount</p>
+              <p className="text-base sm:text-lg font-medium">₹{record.salaryPaid.toFixed(2)}</p>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Date</p>
-              <p>{record.date}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Date</p>
+              <p className="text-sm">{record.date}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Time</p>
-              <p>{record.time}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Time</p>
+              <p className="text-sm">{record.time}</p>
             </div>
           </div>
           
           {record.screenshot && (
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Transaction Screenshot</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">Transaction Screenshot</p>
               <div className="border rounded-lg overflow-hidden">
                 <img
                   src={record.screenshot}
                   alt="Transaction Screenshot"
-                  className="w-full object-contain max-h-64"
+                  className="w-full object-contain max-h-48 sm:max-h-64"
                 />
               </div>
             </div>
@@ -135,32 +137,32 @@ export const SalaryRecordDetails = ({ record, onBack }: SalaryRecordDetailsProps
         </div>
       </CardContent>
       
-      <CardFooter className="flex flex-col space-y-4">
+      <CardFooter className={`flex flex-col ${isMobile ? 'px-3 py-3 gap-3' : 'px-6 py-4 space-y-4'}`}>
         <Button 
           variant="default" 
           onClick={downloadReceipt}
-          className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
+          className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-sm py-2 sm:text-base"
         >
           <FileText className="mr-2 h-4 w-4" />
           Download Receipt
         </Button>
         
-        <div className="flex space-x-4 w-full">
+        <div className={`flex w-full ${isMobile ? 'space-x-2' : 'space-x-4'}`}>
           <Button 
             variant="outline" 
             onClick={generateExcelReport}
-            className="flex-1"
+            className="flex-1 text-xs sm:text-sm py-1.5 sm:py-2"
           >
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             Export Excel
           </Button>
           
           <Button 
             variant="outline" 
             onClick={shareViaWhatsApp}
-            className="flex-1"
+            className="flex-1 text-xs sm:text-sm py-1.5 sm:py-2"
           >
-            <Share className="mr-2 h-4 w-4" />
+            <Share className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             Share
           </Button>
         </div>
