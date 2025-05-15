@@ -1,18 +1,18 @@
 
-import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { useStore } from "@/lib/store";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, Check, Printer, Share, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SalaryForm } from "@/components/salary/SalaryForm";
 import { SalaryRecordsList } from "@/components/salary/SalaryRecordsList";
 import { SalaryHeader } from "@/components/salary/SalaryHeader";
+import { 
+  Breadcrumb, 
+  BreadcrumbItem, 
+  BreadcrumbLink, 
+  BreadcrumbList, 
+  BreadcrumbPage, 
+  BreadcrumbSeparator 
+} from "@/components/ui/breadcrumb";
+import { Home } from "lucide-react";
 
 const SalaryRecords = () => {
   const navigate = useNavigate();
@@ -25,6 +25,23 @@ const SalaryRecords = () => {
         onViewToggle={(view) => setActiveView(view)} 
         onBack={() => navigate("/")} 
       />
+      
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/" className="flex items-center">
+                <Home className="h-4 w-4 mr-1" />
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Salary Records</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       
       <div className="flex-1 p-4">
         {activeView === "form" ? (
