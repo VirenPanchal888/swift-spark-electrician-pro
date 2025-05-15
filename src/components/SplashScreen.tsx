@@ -97,16 +97,17 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <motion.div 
-            className="relative inline-block"
+            className="relative inline-block mb-6"
             variants={logoVariants}
             initial="initial"
             animate="animate"
           >
-            <motion.h1 
-              className={`text-white font-bold mb-4 ${isMobile ? 'text-4xl' : 'text-6xl'}`}
-            >
-              Powerhouse Solutions
-            </motion.h1>
+            <img 
+              src="/lovable-uploads/e9592ba8-41f9-4a72-9de9-b581801a1755.png" 
+              alt="Powerhouse Logo" 
+              className="w-32 h-32 mx-auto"
+            />
+            
             {/* Decorative sparkles */}
             <motion.div 
               className="absolute -top-4 -right-4 w-8 h-8 text-electric-gold"
@@ -126,6 +127,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               ✨
             </motion.div>
           </motion.div>
+          
+          <motion.h1 
+            className={`text-white font-bold mb-4 ${isMobile ? 'text-4xl' : 'text-6xl'}`}
+          >
+            Powerhouse Solutions
+          </motion.h1>
           
           <motion.p 
             className={`text-white/80 ${isMobile ? 'text-lg' : 'text-xl'} mb-8`}

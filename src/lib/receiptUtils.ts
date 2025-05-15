@@ -22,6 +22,13 @@ export const generateSalaryReceipt = (record: SalaryRecord) => {
   doc.setFillColor(155, 135, 245); // Light purple header
   doc.rect(0, 0, 210, 35, 'F');
   
+  // Add company logo at the top
+  try {
+    doc.addImage('/lovable-uploads/e9592ba8-41f9-4a72-9de9-b581801a1755.png', 'PNG', 10, 5, 25, 25);
+  } catch (error) {
+    console.error('Failed to add logo to receipt', error);
+  }
+  
   // Add title
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
@@ -113,6 +120,13 @@ export const generateSalaryReceipt = (record: SalaryRecord) => {
   doc.line(startX + 100, y, startX + 160, y);
   doc.text('Employee Signature', startX + 115, y + 5);
   
+  // Add logo in footer
+  try {
+    doc.addImage('/lovable-uploads/e9592ba8-41f9-4a72-9de9-b581801a1755.png', 'PNG', 15, 277, 15, 15);
+  } catch (error) {
+    console.error('Failed to add logo to footer', error);
+  }
+  
   // Add footer
   doc.setFillColor(155, 135, 245);
   doc.rect(0, 277, 210, 20, 'F');
@@ -124,4 +138,3 @@ export const generateSalaryReceipt = (record: SalaryRecord) => {
   const fileName = `Salary_Receipt_${record.employeeName.replace(/\s+/g, '_')}_${record.date.replace(/\//g, '-')}.pdf`;
   doc.save(fileName);
 };
-
