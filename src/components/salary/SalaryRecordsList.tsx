@@ -64,16 +64,16 @@ export const SalaryRecordsList = ({ onBack }: SalaryRecordsListProps) => {
   // Function to render mobile view cards
   const renderMobileView = () => {
     return sortedDates.map(date => (
-      <div key={date} className="mb-4">
-        <h3 className="font-medium text-sm text-muted-foreground mb-2">
+      <div key={date} className="mb-3">
+        <h3 className="font-medium text-sm text-muted-foreground ml-1 mb-1">
           {format(new Date(date), "MMMM d, yyyy")}
         </h3>
         
-        <div className="space-y-3">
+        <div className="space-y-2">
           {recordsByDate[date].map((record) => (
             <div 
               key={record.id}
-              className="bg-card border rounded-lg p-3 flex justify-between items-center shadow-sm"
+              className="bg-card border rounded-lg p-2 flex justify-between items-center shadow-sm"
               onClick={() => setSelectedRecord(record.id)}
             >
               <div>
@@ -138,12 +138,12 @@ export const SalaryRecordsList = ({ onBack }: SalaryRecordsListProps) => {
   };
 
   return (
-    <Card className="w-full animate-fade-in border-0 sm:border">
-      <CardHeader className="pb-2">
+    <Card className={`w-full animate-fade-in ${isMobile ? 'border-0' : 'border'}`}>
+      <CardHeader className={`${isMobile ? 'px-2 py-2' : 'px-6 pb-2'}`}>
         <CardTitle className="text-lg sm:text-xl">Salary Records</CardTitle>
       </CardHeader>
       
-      <CardContent className="px-2 sm:px-6">
+      <CardContent className={`${isMobile ? 'px-2 pt-0' : 'px-6 pt-0'}`}>
         {salaryRecords.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-muted-foreground">No salary records found</p>
@@ -152,8 +152,8 @@ export const SalaryRecordsList = ({ onBack }: SalaryRecordsListProps) => {
             </Button>
           </div>
         ) : (
-          <ScrollArea className={`${isMobile ? 'h-[calc(100vh-140px)]' : 'h-[calc(100vh-180px)]'}`}>
-            <div className={isMobile ? 'pr-2' : 'pr-4'}>
+          <ScrollArea className={`${isMobile ? 'h-[calc(100vh-112px)]' : 'h-[calc(100vh-180px)]'}`}>
+            <div className={isMobile ? 'pr-1' : 'pr-4'}>
               {isMobile ? renderMobileView() : renderDesktopView()}
             </div>
           </ScrollArea>

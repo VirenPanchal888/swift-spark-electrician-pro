@@ -28,24 +28,26 @@ const SalaryRecords = () => {
         onBack={() => navigate("/")} 
       />
       
-      <div className={`container mx-auto ${isMobile ? 'px-2 pt-2' : 'px-4 pt-4'}`}>
-        <Breadcrumb>
-          <BreadcrumbList className="text-sm">
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/" className="flex items-center">
-                <Home className="h-3 w-3 mr-1" />
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Salary Records</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+      {!isMobile && (
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumb>
+            <BreadcrumbList className="text-sm">
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/" className="flex items-center">
+                  <Home className="h-3 w-3 mr-1" />
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Salary Records</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      )}
       
-      <div className={`flex-1 ${isMobile ? 'p-2' : 'p-4'} w-full`}>
+      <div className={`flex-1 ${isMobile ? 'p-0' : 'p-4'} w-full`}>
         {activeView === "form" ? (
           <SalaryForm onViewRecords={() => setActiveView("list")} />
         ) : (
