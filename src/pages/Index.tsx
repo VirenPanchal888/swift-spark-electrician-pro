@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import { useStore } from "@/lib/store";
-import { BadgeIndianRupee, BarChart3, Building2, Calculator, File, FileText, Home, User, Wallet } from "lucide-react";
+import { BadgeIndianRupee, BarChart3, Building2, Calculator, File, FileText, Home, User, Wallet, Bell } from "lucide-react";
+
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -12,6 +13,7 @@ const Index = () => {
     materials,
     sites
   } = useStore();
+  
   const features = [{
     title: "Transactions",
     description: `${transactions.length} Transactions recorded`,
@@ -54,7 +56,14 @@ const Index = () => {
     icon: <Wallet />,
     path: "/salary",
     color: "bg-pink-500"
+  }, {
+    title: "SMS Notifications",
+    description: "Send SMS to 9607767057",
+    icon: <Bell />,
+    path: "/notifications",
+    color: "bg-orange-500"
   }];
+  
   return <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container py-6 space-y-6">
