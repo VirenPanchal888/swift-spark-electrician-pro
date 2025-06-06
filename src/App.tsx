@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createClient } from '@supabase/supabase-js';
 import Index from "./pages/Index";
 import Transactions from "./pages/Transactions";
 import Calculations from "./pages/Calculations";
@@ -20,9 +22,35 @@ import "./App.css";
 
 const queryClient = new QueryClient();
 
+// Initialize Supabase client
+const supabaseUrl = 'https://wvghzvlkcovinxbayihf.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2Z2h6dmxrY292aW5meGJheWhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxODQyNjQsImV4cCI6MjA2NDc2MDI2NH0.gei5XmtGXDcdAF39pGr_o82PM1B_Oj_shClMo1KJj0Q';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [appReady, setAppReady] = useState(false);
+
+  // Send startup notification
+  const sendStartupNotification = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-sms', {
+        body: {
+          phone_number: '9607767057',
+          message: 'SwiftSpark Electrician Pro application has started successfully! 🚀',
+          employee_name: 'System'
+        }
+      });
+
+      if (error) {
+        console.error('Failed to send startup notification:', error);
+      } else {
+        console.log('Startup notification sent successfully');
+      }
+    } catch (error) {
+      console.error('Error sending startup notification:', error);
+    }
+  };
 
   // Check if this is the first time the user visits the app in this session
   useEffect(() => {
@@ -32,6 +60,8 @@ const App = () => {
       setShowSplash(false);
     } else {
       sessionStorage.setItem("hasVisited", "true");
+      // Send startup notification on first visit
+      sendStartupNotification();
     }
     
     // Initialize theme from localStorage or set default
