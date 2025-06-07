@@ -12,9 +12,24 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  // Parse request body once at the beginning
+  let requestBody
   try {
-    const { phone_number, message, employee_name } = await req.json()
+    requestBody = await req.json()
+  } catch (error) {
+    console.error('Failed to parse request body:', error)
+    return new Response(
+      JSON.stringify({ error: 'Invalid request body' }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400 
+      }
+    )
+  }
 
+  const { phone_number, message, employee_name } = requestBody
+
+  try {
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -25,8 +40,12 @@ serve(async (req) => {
     const twilioAuthToken = Deno.env.get('TWILIO_AUTH_TOKEN')
     const twilioPhoneNumber = Deno.env.get('TWILIO_PHONE_NUMBER')
 
+    console.log('Twilio Account SID exists:', !!twilioAccountSid)
+    console.log('Twilio Auth Token exists:', !!twilioAuthToken)
+    console.log('Twilio Phone Number exists:', !!twilioPhoneNumber)
+
     if (!twilioAccountSid || !twilioAuthToken || !twilioPhoneNumber) {
-      throw new Error('Twilio credentials not configured')
+      throw new Error('Twilio credentials not configured properly')
     }
 
     // Send SMS via Twilio
@@ -36,6 +55,10 @@ serve(async (req) => {
     formData.append('From', twilioPhoneNumber)
     formData.append('To', phone_number)
     formData.append('Body', message)
+
+    console.log('Sending SMS to:', phone_number)
+    console.log('From number:', twilioPhoneNumber)
+    console.log('Message:', message)
 
     const twilioResponse = await fetch(twilioUrl, {
       method: 'POST',
@@ -93,14 +116,12 @@ serve(async (req) => {
       const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
       const supabase = createClient(supabaseUrl, supabaseKey)
       
-      const { phone_number, message, employee_name } = await req.json()
-      
       await supabase
         .from('sms_notifications')
         .insert({
-          phone_number,
-          message,
-          employee_name,
+          phone_number: requestBody.phone_number,
+          message: requestBody.message,
+          employee_name: requestBody.employee_name,
           status: 'failed',
           sent_at: new Date().toISOString()
         })
