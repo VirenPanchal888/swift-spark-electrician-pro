@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Phone, Send, Database } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SMSNotification {
   id: string;
@@ -37,49 +38,47 @@ export const NotificationService = () => {
 
     setIsLoading(true);
     try {
-      // Create notification record in database first
-      const notificationData = {
+      console.log('Sending SMS via Supabase edge function...');
+      
+      const { data, error } = await supabase.functions.invoke('send-sms', {
+        body: {
+          phone_number: defaultPhoneNumber,
+          message: message.trim(),
+          employee_name: employeeName.trim() || undefined
+        }
+      });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to send SMS');
+      }
+
+      console.log('SMS sent successfully:', data);
+
+      const newNotification: SMSNotification = {
+        id: crypto.randomUUID(),
         phone_number: defaultPhoneNumber,
         message: message.trim(),
-        status: 'pending' as const,
+        status: 'sent',
         employee_name: employeeName.trim() || undefined,
         created_at: new Date().toISOString()
       };
 
-      // In a real implementation, this would call your Supabase edge function
-      // For now, we'll simulate the SMS sending
-      const response = await fetch('/api/send-sms', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(notificationData),
+      setNotifications(prev => [newNotification, ...prev]);
+      
+      toast({
+        title: "SMS Sent Successfully",
+        description: `Message sent to ${defaultPhoneNumber}`,
       });
 
-      if (response.ok) {
-        const newNotification: SMSNotification = {
-          ...notificationData,
-          id: crypto.randomUUID(),
-          status: 'sent'
-        };
-
-        setNotifications(prev => [newNotification, ...prev]);
-        
-        toast({
-          title: "SMS Sent Successfully",
-          description: `Message sent to ${defaultPhoneNumber}`,
-        });
-
-        // Clear form
-        setMessage('');
-        setEmployeeName('');
-      } else {
-        throw new Error('Failed to send SMS');
-      }
+      // Clear form
+      setMessage('');
+      setEmployeeName('');
+      
     } catch (error) {
       console.error('SMS sending failed:', error);
       
-      // Still record the failed attempt
+      // Record the failed attempt
       const failedNotification: SMSNotification = {
         id: crypto.randomUUID(),
         phone_number: defaultPhoneNumber,
@@ -93,7 +92,7 @@ export const NotificationService = () => {
       
       toast({
         title: "SMS Failed",
-        description: "Failed to send SMS. Please try again.",
+        description: `Failed to send SMS: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive"
       });
     } finally {
