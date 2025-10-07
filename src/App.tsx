@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Transactions from "./pages/Transactions";
 import Calculations from "./pages/Calculations";
@@ -18,14 +18,10 @@ import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import SplashScreen from "./components/SplashScreen";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import "./App.css";
 
 const queryClient = new QueryClient();
-
-// Initialize Supabase client
-const supabaseUrl = 'https://wvghzvlkcovinxbayihf.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2Z2h6dmxrY292aW5meGJheWhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxODQyNjQsImV4cCI6MjA2NDc2MDI2NH0.gei5XmtGXDcdAF39pGr_o82PM1B_Oj_shClMo1KJj0Q';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -86,23 +82,25 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            {showSplash ? (
-              <Route path="/" element={<SplashScreen onComplete={() => setShowSplash(false)} />} />
-            ) : (
-              <Route path="/" element={<Index />} />
-            )}
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/calculations" element={<Calculations />} />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/materials" element={<Materials />} />
-            <Route path="/docs" element={<Docs />} />
-            <Route path="/sites" element={<Sites />} />
-            <Route path="/salary" element={<SalaryRecords />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ProtectedRoute>
+            <Routes>
+              {showSplash ? (
+                <Route path="/" element={<SplashScreen onComplete={() => setShowSplash(false)} />} />
+              ) : (
+                <Route path="/" element={<Index />} />
+              )}
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/calculations" element={<Calculations />} />
+              <Route path="/employees" element={<Employees />} />
+              <Route path="/materials" element={<Materials />} />
+              <Route path="/docs" element={<Docs />} />
+              <Route path="/sites" element={<Sites />} />
+              <Route path="/salary" element={<SalaryRecords />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ProtectedRoute>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
