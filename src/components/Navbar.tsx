@@ -107,21 +107,21 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center gap-2 mr-4">
-          <Link to="/" className="font-bold text-xl flex items-center">
+      <div className="w-full px-3 sm:px-4 md:container flex h-14 items-center justify-between">
+        <div className="flex items-center gap-2 mr-2">
+          <Link to="/" className="font-bold text-lg sm:text-xl flex items-center">
             <img 
               src="/lovable-uploads/e9592ba8-41f9-4a72-9de9-b581801a1755.png" 
               alt="Powerhouse Logo"
-              className="h-8 w-8 mr-2"
+              className="h-7 w-7 sm:h-8 sm:w-8 mr-2"
             />
             <motion.span
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-xl"
+              className="text-base sm:text-lg truncate max-w-[180px] sm:max-w-none"
             >
-              Powerhouse Solutions
+              Powerhouse
             </motion.span>
           </Link>
         </div>
