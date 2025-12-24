@@ -88,19 +88,20 @@ const Settings = () => {
       setIsResetting(false);
     }
   };
-  return <div className="flex flex-col min-h-screen">
+  return (
+    <div className="flex flex-col min-h-screen w-full">
       <Navbar />
-      <div className="flex-1 container py-8">
-        <h1 className="text-3xl font-bold mb-6">Settings</h1>
+      <div className="flex-1 w-full px-3 py-4 sm:px-4 md:container md:px-6">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Settings</h1>
         
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           {/* Theme Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Appearance</CardTitle>
-              <CardDescription>Manage the visual preferences for your application</CardDescription>
+          <Card className="rounded-none sm:rounded-lg border-x-0 sm:border-x">
+            <CardHeader className="p-4">
+              <CardTitle className="text-lg">Appearance</CardTitle>
+              <CardDescription>Manage visual preferences</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -112,12 +113,12 @@ const Settings = () => {
           </Card>
           
           {/* Data Backup & Sync */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Data Management</CardTitle>
-              <CardDescription>Backup, sync, and reset your application data</CardDescription>
+          <Card className="rounded-none sm:rounded-lg border-x-0 sm:border-x">
+            <CardHeader className="p-4">
+              <CardTitle className="text-lg">Data Management</CardTitle>
+              <CardDescription>Backup, sync, and reset your data</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-4 pt-0 space-y-4">
               <SiteDataStats />
               
               <div className="pt-4 border-t">
@@ -130,22 +131,20 @@ const Settings = () => {
           </Card>
 
           {/* About the Application */}
-          <Card className="md:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <Card className="md:col-span-2 rounded-none sm:rounded-lg border-x-0 sm:border-x">
+            <CardHeader className="p-4">
+              <CardTitle className="flex items-center text-lg">
                 <Info className="mr-2 h-5 w-5" />
                 About This Application
               </CardTitle>
-              <CardDescription>Information about the application and its purpose</CardDescription>
+              <CardDescription>Application information</CardDescription>
             </CardHeader>
-            <CardContent className="prose prose-sm max-w-none">
+            <CardContent className="p-4 pt-0 prose prose-sm max-w-none">
               <div className="space-y-4">
-                <p>This Powerhouse Electrician management application was developed to streamline the process of managing electrician projects, resources, and finances. It provides a comprehensive solution for tracking materials, employees, documents, transactions, and site progress all in one place.</p>
-                <p>The application enables Electrician managers to efficiently allocate resources, monitor expenses, generate reports, and maintain clear communication across all project stakeholders.</p>
-                
+                <p className="text-sm">This Powerhouse Electrician management application streamlines project management, resource tracking, and finances in one place.</p>
                 
                 <div className="pt-4 border-t mt-4">
-                  <p className="text-sm text-muted-foreground ">
+                  <p className="text-sm text-muted-foreground">
                     Designed and Developed by Viren Panchal
                   </p>
                 </div>
@@ -183,6 +182,7 @@ const Settings = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default Settings;
