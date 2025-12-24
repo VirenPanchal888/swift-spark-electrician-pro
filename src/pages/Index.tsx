@@ -58,25 +58,33 @@ const Index = () => {
     color: "bg-pink-500"
   }];
   
-  return <div className="min-h-screen bg-background">
+  return (
+    <div className="min-h-screen bg-background w-full">
       <Navbar />
-      <div className="container py-6 space-y-6">
-        <h1 className="font-bold mb-6 text-xl">🛠 Electrician Dashboard (Navigate to the different dashboards)</h1>
+      <div className="w-full px-3 py-4 sm:px-4 md:container md:px-6 space-y-4">
+        <h1 className="font-bold text-lg sm:text-xl">🛠 Electrician Dashboard</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {features.map((feature, index) => <Card key={index} className="hover:border-primary/50 cursor-pointer transition-all hover:shadow-md" onClick={() => navigate(feature.path)}>
-              <CardHeader className="pb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {features.map((feature, index) => (
+            <Card 
+              key={index} 
+              className="hover:border-primary/50 cursor-pointer transition-all hover:shadow-md active:scale-[0.98]" 
+              onClick={() => navigate(feature.path)}
+            >
+              <CardHeader className="p-4 pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                  <div className={`${feature.color} p-2 rounded-full text-white`}>
+                  <CardTitle className="text-base sm:text-lg">{feature.title}</CardTitle>
+                  <div className={`${feature.color} p-2 rounded-full text-primary-foreground`}>
                     {feature.icon}
                   </div>
                 </div>
-                <CardDescription>{feature.description}</CardDescription>
+                <CardDescription className="text-sm">{feature.description}</CardDescription>
               </CardHeader>
-            </Card>)}
+            </Card>
+          ))}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default Index;
