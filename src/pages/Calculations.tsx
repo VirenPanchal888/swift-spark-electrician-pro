@@ -27,48 +27,50 @@ const Calculations = () => {
     exportData();
   };
 
-  return <div className="min-h-screen bg-gray-50">
+  return (
+    <div className="min-h-screen bg-background w-full">
       <Navbar />
       
-      <main className="page-container animate-fade-in">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <h1 className="font-bold text-gray-900 mb-4 md:mb-0 text-2xl">🖩 Calculation & Analysis</h1>
+      <main className="w-full px-3 py-4 sm:px-4 md:container md:px-6 animate-fade-in">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+          <h1 className="font-bold text-foreground text-xl sm:text-2xl">🖩 Calculation & Analysis</h1>
           
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <Button 
               variant="outline" 
+              size="sm"
               onClick={handleExcelExport}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 text-xs sm:text-sm"
             >
-              <File className="h-4 w-4" />
-              <span className="hidden sm:inline">Export Excel</span>
-              <span className="sm:hidden">Excel</span>
+              <File className="h-3.5 w-3.5" />
+              Excel
             </Button>
             
             <Button 
               variant="outline" 
+              size="sm"
               onClick={handlePDFExport}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 text-xs sm:text-sm"
             >
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Export PDF</span>
-              <span className="sm:hidden">PDF</span>
+              <FileText className="h-3.5 w-3.5" />
+              PDF
             </Button>
             
             <Button 
               variant="outline" 
+              size="sm"
               onClick={handleJSONExport}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 text-xs sm:text-sm"
             >
-              <FileJson className="h-4 w-4" />
-              <span className="hidden sm:inline">Export JSON</span>
-              <span className="sm:hidden">JSON</span>
+              <FileJson className="h-3.5 w-3.5" />
+              JSON
             </Button>
           </div>
         </div>
         
         <CalculationTool />
       </main>
-    </div>;
+    </div>
+  );
 };
 export default Calculations;
